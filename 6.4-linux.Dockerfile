@@ -148,6 +148,7 @@ RUN set -xe \
 &&  rm -f linuxdeployqt.AppImage \
 &&  rm -f squashfs-root/usr/bin/qt.conf squashfs-root/usr/bin/linuxdeployqt \
 &&  cp -v squashfs-root/usr/bin/* /usr/local/bin/ \
+&&  cp -rv squashfs-root/usr/lib/appimagekit /usr/local/lib/ \
 &&  rm -rf squashfs-root \
 &&  git clone -b add_qt6_support https://github.com/RICCIARDI-Adrien/linuxdeployqt.git \
 &&  cd linuxdeployqt \
