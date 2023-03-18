@@ -5,7 +5,7 @@ FROM ubuntu:18.04
 MAINTAINER Aurélien Brooke <dev@abrooke.fr>
 
 ARG CMAKE_VERSION=3.24.2
-ARG QT_VERSION=6.4.1
+ARG QT_VERSION=6.4.3
 ARG QT_CONFIGURE_OPTIONS=" \
     -openssl-linked \
     -release \
