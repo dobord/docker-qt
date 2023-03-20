@@ -63,8 +63,8 @@ RUN set -xe \
         tar xzf openssl.tar.gz ; \
         cd openssl-${OPENSSL_VERSION}/ ; \
         ./Configure android-${OPENSSL_ARCH} shared zlib-dynamic -no-engine no-tests --prefix=/opt/qt/${QT_VERSION}/android_${QT_ARCH} -D__ANDROID_API__=23 ; \
-        make SHLIB_EXT='.so' CALC_VERSIONS="SHLIB_COMPAT=; SHLIB_SOVER=" build_libs ; \
-        make SHLIB_EXT='.so' install_sw ; \
+        make SHLIB_VERSION_NUMBER= SHLIB_EXT=_1_1.so build_libs ; \
+        make SHLIB_VERSION_NUMBER= SHLIB_EXT=_1_1.so install_sw ; \
         cd ../ ; \
         rm -rf openssl-${OPENSSL_VERSION} ; \
     done \

@@ -46,9 +46,16 @@ Notes
 OpenSSL for Android is compiled and installed directly inside the Qt directory, so you can easily link to or ship it:
 ```cmake
 find_package(OpenSSL 1.1 REQUIRED)
+get_filename_component(OPENSSL_LIB_DIR ${OPENSSL_SSL_LIBRARY} DIRECTORY)
+# To make androiddeployqt deploy OpenSSL (mandatory)
+set_property(TARGET MyTarget
+    APPEND PROPERTY QT_ANDROID_EXTRA_LIBS
+    ${OPENSSL_LIB_DIR}/libcrypto_1_1.so
+    ${OPENSSL_LIB_DIR}/libssl_1_1.so
+)
+# To use crypto in your app (optional)
 target_link_libraries(MyTarget PRIVATE
-    OpenSSL::Crypto # if needed by your app
-    OpenSSL::SSL # for androiddeplyqt: it will copy libssl.so in the APK
+    OpenSSL::Crypto
 )
 ```
 
