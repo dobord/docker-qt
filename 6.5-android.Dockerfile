@@ -8,8 +8,8 @@ ARG ANDROID_NDK_VERSION=25.1.8937393
 ARG AQT_EXTRA_ARGS="--module qt3d qtshadertools qtmultimedia"
 ARG CMAKE_VERSION=3.26.4
 ARG EXTRA_PACKAGES="git openssh-client"
-ARG OPENSSL_VERSION=1.1.1t
-ARG QT_VERSION=6.5.1
+ARG OPENSSL_VERSION=1.1.1u
+ARG QT_VERSION=6.5.2
 ARG SDKMANAGER_EXTRA_ARGS=""
 
 ENV ANDROID_SDK_ROOT=/opt/android-sdk \
@@ -21,7 +21,7 @@ ENV ANDROID_NDK_HOME=${ANDROID_NDK_ROOT} \
     PATH=/opt/android-sdk/cmdline-tools/latest/bin:${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin:${QT_ANDROID_PATH}/bin:${PATH}
 
 RUN set -xe \
-&&  DEBIAN_FRONTEND=noninteractive \
+&&  export DEBIAN_FRONTEND=noninteractive \
 &&  BUILD_PACKAGES="python3-pip" \
 &&  apt update \
 &&  apt full-upgrade -y \
@@ -47,7 +47,7 @@ RUN set -xe \
 &&  mv -v cmdline-tools /opt/android-sdk/cmdline-tools/latest \
 &&  yes | sdkmanager --licenses \
 &&  sdkmanager --update \
-&&  sdkmanager "platforms;android-31" "platform-tools" "build-tools;33.0.0" "ndk;${ANDROID_NDK_VERSION}" ${SDKMANAGER_EXTRA_ARGS} \
+&&  sdkmanager "platforms;android-33" "platform-tools" "build-tools;33.0.2" "ndk;${ANDROID_NDK_VERSION}" ${SDKMANAGER_EXTRA_ARGS} \
 &&  pip install aqtinstall \
 &&  aqt install-qt linux desktop ${QT_VERSION} gcc_64 --outputdir /opt/qt \
 &&  curl -Lo openssl.tar.gz https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz \

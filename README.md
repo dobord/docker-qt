@@ -10,8 +10,9 @@ Qt 6.4.3 (EOL 2023-09-29)
 * `a12e/docker-qt:6.4-android` (Ubuntu 22.04 LTS, CMake 3.24.2, OpenSSL 1.1.1t)
 * `a12e/docker-qt:6.4-linux` (Ubuntu 18.04 LTS, GCC 11.1, CMake 3.24.2, linuxdeployqt)
 
-Qt 6.5.1
-* `a12e/docker-qt:6.5-android` (Ubuntu 22.04 LTS, CMake 3.26.4, OpenSSL 1.1.1t)
+Qt 6.5.2 LTS
+* `a12e/docker-qt:6.5-android` (Ubuntu 22.04 LTS, CMake 3.26.4, OpenSSL 1.1.1u)
+* `a12e/docker-qt:6.5-linux` (Ubuntu 20.04 LTS, GCC 11.1, CMake 3.24.2, linuxdeployqt)
 
 Android example
 ---------------
@@ -62,4 +63,4 @@ target_link_libraries(MyTarget PRIVATE
 )
 ```
 
-Linux images are built inside a 18.04 LTS Ubuntu, to allow the AppImage to be run on older systems. Otherwise, links to too recent versions of GLIBC are made. However, the `libstdc++.so.6` needs to be deployed, because Qt requires C++17 features.
+Linux images are built inside a 20.04 LTS Ubuntu, to allow the AppImage to be run on older systems. Otherwise, links to too recent versions of GLIBC are made. However, the `libstdc++.so.6` needs to be deployed, because Qt requires C++17 features.

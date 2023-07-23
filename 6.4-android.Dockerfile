@@ -5,7 +5,7 @@ FROM ubuntu:22.04
 MAINTAINER Aurélien Brooke <dev@abrooke.fr>
 
 ARG ANDROID_NDK_VERSION=23.1.7779620
-ARG AQT_EXTRA_ARGS="--module qt3d qtmultimedia"
+ARG AQT_EXTRA_ARGS="--module qt3d qtshadertools qtmultimedia"
 ARG CMAKE_VERSION=3.24.2
 ARG EXTRA_PACKAGES="git openssh-client"
 ARG OPENSSL_VERSION=1.1.1t
