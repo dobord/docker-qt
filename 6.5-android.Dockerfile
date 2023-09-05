@@ -8,7 +8,7 @@ ARG ANDROID_NDK_VERSION=25.1.8937393
 ARG AQT_EXTRA_ARGS="--module qt3d qtshadertools qtmultimedia"
 ARG CMAKE_VERSION=3.26.4
 ARG EXTRA_PACKAGES="git openssh-client"
-ARG OPENSSL_VERSION=1.1.1u
+ARG OPENSSL_VERSION=3.0.10
 ARG QT_VERSION=6.5.2
 ARG SDKMANAGER_EXTRA_ARGS=""
 
@@ -61,9 +61,10 @@ RUN set -xe \
         esac ; \
         tar xzf openssl.tar.gz ; \
         cd openssl-${OPENSSL_VERSION}/ ; \
+        sed -i 's/sub shlibvariant        { $target{shlib_variant} || "" }/sub shlibvariant        { "_3" }/g' ./Configurations/platform/Unix.pm ; \
         ./Configure android-${OPENSSL_ARCH} shared zlib-dynamic -no-engine no-tests --prefix=/opt/qt/${QT_VERSION}/android_${QT_ARCH} -D__ANDROID_API__=23 ; \
-        make SHLIB_VERSION_NUMBER= SHLIB_EXT=_1_1.so build_libs ; \
-        make SHLIB_VERSION_NUMBER= SHLIB_EXT=_1_1.so install_sw ; \
+        make build_libs ; \
+        make install_sw ; \
         cd ../ ; \
         rm -rf openssl-${OPENSSL_VERSION} ; \
     done \
