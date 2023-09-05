@@ -107,6 +107,7 @@ RUN set -xe \
     libwebp-dev \
     libx11-dev \
     libx11-xcb-dev \
+    libxcb-cursor-dev \
     libxcb-glx0-dev \
     libxcb-icccm4-dev \
     libxcb-image0-dev \
