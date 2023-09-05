@@ -11,7 +11,7 @@ Qt 6.4.3 (EOL 2023-09-29)
 * `a12e/docker-qt:6.4-linux` (Ubuntu 18.04 LTS, GCC 11.1, CMake 3.24.2, linuxdeployqt)
 
 Qt 6.5.2 LTS
-* `a12e/docker-qt:6.5-android` (Ubuntu 22.04 LTS, CMake 3.26.4, OpenSSL 1.1.1u)
+* `a12e/docker-qt:6.5-android` (Ubuntu 22.04 LTS, CMake 3.26.4, OpenSSL 3.0.10)
 * `a12e/docker-qt:6.5-linux` (Ubuntu 20.04 LTS, GCC 11.1, CMake 3.24.2, linuxdeployqt)
 
 Android example
@@ -31,7 +31,7 @@ Linux example
 -------------
 
 ```sh
-docker run -it --rm --volume $PWD:/src a12e/docker-qt:6.4-linux
+docker run -it --rm --volume $PWD:/src a12e/docker-qt:6.5-linux
 ```
 
 ```sh
@@ -39,9 +39,7 @@ mkdir ~/build && cd ~/build
 cmake /src
 cmake --build . --parallel
 cmake --install . --prefix $PWD/appdir/usr
-linuxdeployqt appdir/usr/share/applications/*.desktop -qmldir=/src/resources/ -extra-plugins=platforms
-cp -v /usr/lib/x86_64-linux-gnu/libstdc++.so.6 appdir/usr/lib/
-linuxdeployqt appdir/usr/share/applications/*.desktop -appimage
+linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -qmldir=/src/resources/ -extra-plugins=platforms
 ```
 
 Notes
@@ -52,10 +50,11 @@ OpenSSL for Android is compiled and installed directly inside the Qt directory, 
 find_package(OpenSSL 1.1 REQUIRED)
 get_filename_component(OPENSSL_LIB_DIR ${OPENSSL_SSL_LIBRARY} DIRECTORY)
 # To make androiddeployqt deploy OpenSSL (mandatory)
+# Use _1_1.so suffix instead of _3.so for OpenSSL 1.1 on Qt <= 6.4
 set_property(TARGET MyTarget
     APPEND PROPERTY QT_ANDROID_EXTRA_LIBS
-    ${OPENSSL_LIB_DIR}/libcrypto_1_1.so
-    ${OPENSSL_LIB_DIR}/libssl_1_1.so
+    ${OPENSSL_LIB_DIR}/libcrypto_3.so
+    ${OPENSSL_LIB_DIR}/libssl_3.so
 )
 # To use crypto in your app (optional)
 target_link_libraries(MyTarget PRIVATE
@@ -63,4 +62,4 @@ target_link_libraries(MyTarget PRIVATE
 )
 ```
 
-Linux images are built inside a 20.04 LTS Ubuntu, to allow the AppImage to be run on older systems. Otherwise, links to too recent versions of GLIBC are made. However, the `libstdc++.so.6` needs to be deployed, because Qt requires C++17 features.
+Linux images are built inside a 20.04 LTS Ubuntu, to allow the AppImage to be run on older systems. Otherwise, links to too recent versions of the glibc are made.
