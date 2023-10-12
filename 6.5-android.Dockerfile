@@ -6,7 +6,7 @@ MAINTAINER Aurélien Brooke <dev@abrooke.fr>
 
 ARG ANDROID_NDK_VERSION=25.1.8937393
 ARG AQT_EXTRA_ARGS="--module qt3d qtshadertools qtmultimedia"
-ARG CMAKE_VERSION=3.26.4
+ARG CMAKE_VERSION=3.27.7
 ARG EXTRA_PACKAGES="git openssh-client"
 ARG OPENSSL_VERSION=3.0.11
 ARG QT_VERSION=6.5.3

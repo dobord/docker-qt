@@ -11,8 +11,8 @@ Qt 6.4.3 (EOL 2023-09-29)
 * `a12e/docker-qt:6.4-linux` (Ubuntu 18.04 LTS, GCC 11.1, CMake 3.24.2, linuxdeployqt)
 
 Qt 6.5.3 LTS
-* `a12e/docker-qt:6.5-android` (Ubuntu 22.04 LTS, CMake 3.26.4, OpenSSL 3.0.11)
-* `a12e/docker-qt:6.5-linux` (Ubuntu 20.04 LTS, GCC 11.1, CMake 3.24.2, linuxdeployqt)
+* `a12e/docker-qt:6.5-android` (Ubuntu 22.04 LTS, CMake 3.27.7, OpenSSL 3.0.11)
+* `a12e/docker-qt:6.5-linux` (Ubuntu 20.04 LTS, GCC 11.1, CMake 3.27.7, linuxdeployqt)
 
 Android example
 ---------------
