@@ -9,7 +9,7 @@ ARG AQT_EXTRA_ARGS="--module qt3d qtshadertools qtmultimedia"
 ARG CMAKE_VERSION=3.26.4
 ARG EXTRA_PACKAGES="git openssh-client"
 ARG OPENSSL_VERSION=3.0.10
-ARG QT_VERSION=6.5.2
+ARG QT_VERSION=6.5.3
 ARG SDKMANAGER_EXTRA_ARGS=""
 
 ENV ANDROID_SDK_ROOT=/opt/android-sdk \
