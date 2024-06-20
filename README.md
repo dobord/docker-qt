@@ -14,11 +14,15 @@ Qt 6.5.3 LTS
 * `a12e/docker-qt:6.5-android` (Ubuntu 22.04 LTS, CMake 3.27.7, OpenSSL 3.0.11)
 * `a12e/docker-qt:6.5-linux` (Ubuntu 20.04 LTS, GCC 11.1, CMake 3.27.7, linuxdeployqt)
 
+Qt 6.7.2 (EOL 2024-10-02)
+* `a12e/docker-qt:6.7-android` (Ubuntu 24.04 LTS, CMake 3.29.6, OpenSSL 3.0.14)
+* `a12e/docker-qt:6.7-linux` (Ubuntu 20.04 LTS, GCC 11.1, CMake 3.29.6, linuxdeployqt)
+
 Android example
 ---------------
 
 ```sh
-docker run -it --rm --volume $PWD:/src a12e/docker-qt:6.5-android
+docker run -it --rm --volume $PWD:/src a12e/docker-qt:6.7-android
 ```
 
 ```sh
@@ -31,7 +35,7 @@ Linux example
 -------------
 
 ```sh
-docker run -it --rm --volume $PWD:/src a12e/docker-qt:6.5-linux
+docker run -it --rm --volume $PWD:/src a12e/docker-qt:6.7-linux
 ```
 
 ```sh
@@ -39,7 +43,7 @@ mkdir ~/build && cd ~/build
 cmake /src
 cmake --build . --parallel
 cmake --install . --prefix $PWD/appdir/usr
-linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -qmldir=/src/resources/ -extra-plugins=platforms
+linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -qmldir=/src/qml/ -extra-plugins=platforms
 ```
 
 Notes
