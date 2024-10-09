@@ -4,7 +4,7 @@
 FROM ubuntu:20.04
 MAINTAINER Aurélien Brooke <dev@abrooke.fr>
 
-ARG CMAKE_VERSION=3.29.6
+ARG CMAKE_VERSION=3.30.4
 ARG QT_VERSION=6.7.2
 ARG QT_CONFIGURE_OPTIONS=" \
     -openssl-linked \
