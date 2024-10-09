@@ -6,13 +6,13 @@ MAINTAINER Aurélien Brooke <dev@abrooke.fr>
 
 ARG ANDROID_PLATFORM_VERSION=34
 ARG ANDROID_NDK_VERSION=26.1.10909125
-ARG AQT_EXTRA_ARGS="--module qt3d qtshadertools qtmultimedia"
+ARG AQT_EXTRA_ARGS="--module qtshadertools qtmultimedia"
 ARG BUILD_TOOLS_VERSION=34.0.0
 ARG CMAKE_VERSION=3.30.4
 ARG EXTRA_PACKAGES="git openssh-client"
 ARG OPENSSL_VERSION=3.0.14
 ARG QT_ARCHS="arm64_v8a armv7" # in arm64_v8a armv7 x86 x86_64
-ARG QT_VERSION=6.7.2
+ARG QT_VERSION=6.7.3
 ARG SDKMANAGER_EXTRA_ARGS=""
 
 ENV ANDROID_SDK_ROOT=/opt/android-sdk \
