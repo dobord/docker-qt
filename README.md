@@ -16,13 +16,17 @@ Qt 6.5.3 LTS
 
 Qt 6.7.3 (EOL 2024-10-02)
 * `a12e/docker-qt:6.7-android` (Ubuntu 24.04 LTS, CMake 3.30.4, OpenSSL 3.0.14)
-* `a12e/docker-qt:6.7-linux` (Ubuntu 20.04 LTS, GCC 11.1, CMake 3.30.4, linuxdeployqt)
+* `a12e/docker-qt:6.7-linux` (Ubuntu 20.04 LTS, GCC 13.1, CMake 3.30.4, linuxdeployqt)
+
+Qt 6.8.0 LTS
+* `a12e/docker-qt:6.8-android` (Ubuntu 24.04 LTS, CMake 3.30.4, OpenSSL 3.0.14)
+* `a12e/docker-qt:6.8-linux` (Ubuntu 20.04 LTS, GCC 13.1, CMake 3.30.4, linuxdeployqt)
 
 Android example
 ---------------
 
 ```sh
-docker run -it --rm --volume $PWD:/src a12e/docker-qt:6.7-android
+docker run -it --rm --volume $PWD:/src a12e/docker-qt:6.8-android
 ```
 
 ```sh
@@ -35,7 +39,7 @@ Linux example
 -------------
 
 ```sh
-docker run -it --rm --volume $PWD:/src a12e/docker-qt:6.7-linux
+docker run -it --rm --volume $PWD:/src a12e/docker-qt:6.8-linux
 ```
 
 ```sh
