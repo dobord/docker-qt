@@ -5,10 +5,14 @@ FROM ubuntu:20.04
 MAINTAINER Aurélien Brooke <dev@abrooke.fr>
 
 ARG CMAKE_VERSION=3.30.4
-ARG QT_VERSION=6.8.0
+ARG QT_VERSION=6.8.3
 ARG QT_CONFIGURE_OPTIONS=" \
     -openssl-linked \
     -skip qtopcua \
+    -nomake examples \
+    -skip qt3d \
+    -skip qtquick3dphysics \
+    -skip qtwebengine \
     -release \
     -- \
     -DFEATURE_accessibility=ON \
