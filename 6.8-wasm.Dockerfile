@@ -147,8 +147,8 @@ RUN git clone https://github.com/emscripten-core/emsdk.git \
 &&  ./emsdk install ${EMSDK_VERSION} \
 &&  ./emsdk activate ${EMSDK_VERSION} \
 &&  echo "source /emsdk/emsdk_env.sh" >> ~/.bashrc \
-&&  ./emsdk_env.sh
-&&  cd .. \
+&&  ./emsdk_env.sh \
+&&  cd ..
 
 RUN curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
 &&  cd qt-everywhere-src-* \
