@@ -1,8 +1,8 @@
 # Docker container to build Qt 6.8 for Android projects with latest cmake
-# Image: a12e/docker-qt:6.8-android
+# Image: dobord/docker-qt:6.8-android
 
 FROM ubuntu:24.04
-MAINTAINER Aurélien Brooke <dev@abrooke.fr>
+MAINTAINER Mikhail Kashin <dobordx@yandex.ru>
 
 ARG ANDROID_PLATFORM_VERSION=34
 ARG ANDROID_NDK_VERSION=26.1.10909125
@@ -12,7 +12,7 @@ ARG CMAKE_VERSION=3.30.4
 ARG EXTRA_PACKAGES="git openssh-client"
 ARG OPENSSL_VERSION=3.0.14
 ARG QT_ARCHS="arm64_v8a armv7" # in arm64_v8a armv7 x86 x86_64
-ARG QT_VERSION=6.8.0
+ARG QT_VERSION=6.8.3
 ARG SDKMANAGER_EXTRA_ARGS=""
 
 ENV ANDROID_SDK_ROOT=/opt/android-sdk \

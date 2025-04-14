@@ -1,11 +1,11 @@
 # Docker container to build Qt 6.8 for Linux 64-bit projects with latest cmake and linuxdeployqt
-# Image: a12e/docker-qt:6.8-linux
+# Image: dobord/docker-qt:6.8-linux
 
 FROM ubuntu:20.04
-MAINTAINER Aurélien Brooke <dev@abrooke.fr>
+MAINTAINER Mikhail Kashin <dobordx@yandex.ru>
 
 ARG CMAKE_VERSION=3.30.4
-ARG QT_VERSION=6.8.0
+ARG QT_VERSION=6.8.3
 ARG QT_CONFIGURE_OPTIONS=" \
     -openssl-linked \
     -skip qtopcua \
