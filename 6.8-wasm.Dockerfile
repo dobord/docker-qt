@@ -55,10 +55,13 @@ RUN set -xe \
 &&  add-apt-repository ppa:ubuntu-toolchain-r/test \
 &&  apt autoremove -y --purge software-properties-common \
 &&  apt install -y --no-install-recommends \
+    bash \
     g++-13 \
     git openssh-client \
     locales sudo \
     fuse file \
+    openjdk-11-jdk \
+    python3 \
 &&  update-alternatives \
     --install /usr/bin/gcc gcc /usr/bin/gcc-13 130 \
     --slave /usr/bin/g++ g++ /usr/bin/g++-13 \
@@ -66,6 +69,11 @@ RUN set -xe \
     --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-13 \
     --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-13 \
     --slave /usr/bin/cpp cpp /usr/bin/cpp-13 \
+&&  git clone https://github.com/emscripten-core/emsdk.git \
+&&  cd emsdk \
+&&  ./emsdk install ${EMSDK_VERSION} \
+&&  ./emsdk activate ${EMSDK_VERSION} \
+&&  cd .. \
 &&  apt install -y --no-install-recommends \
     libasound2-dev \
     libatspi2.0-dev \
@@ -138,24 +146,20 @@ RUN set -xe \
     pkg-config \
     unixodbc-dev \
     zlib1g-dev \
-    openjdk-11-jdk \
-    python3
-
-
-RUN git clone https://github.com/emscripten-core/emsdk.git \
-&&  cd emsdk \
-&&  ./emsdk install ${EMSDK_VERSION} \
-&&  ./emsdk activate ${EMSDK_VERSION} \
-&&  echo "source /emsdk/emsdk_env.sh" >> ~/.bashrc \
-&&  ./emsdk_env.sh
-&&  cd .. \
-
-RUN curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
+&&  curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
 &&  cd qt-everywhere-src-* \
-&&  ./configure -prefix /usr/local -xplatform wasm-emscripten ${QT_CONFIGURE_OPTIONS} ${QT_CONFIGURE_EXTRA_OPTIONS} \
-&&  cmake --build . --parallel \
-&&  cmake --install . \
-&&  ldconfig -v \
+&&  ( bash -c "source ./emsdk_env.sh > /dev/null ; \
+        em++ --version ; \
+        ./configure -qt-host-path /opt/qt \
+            -xplatform wasm-emscripten \
+            -feature-thread -prefix $PWD/qtbase ${QT_CONFIGURE_OPTIONS} ${QT_CONFIGURE_EXTRA_OPTIONS} \
+        && cmake --build . --parallel \
+             -t qtbase -t qtgui -t qtnetwork -t qtwidgets -t qtqml -t qtquick \
+             -t qtquickcontrols -t qtquicklayouts -t qtcore5compat \
+             -t qtimageformats -t qtopengl -t qtsvg -t qtwebsockets -t qtdeclarative \
+        && cmake --install . \
+        && ldconfig -v \
+    ") \
 &&  cd .. \
 &&  rm -rf qt-everywhere-src-* \
 &&  curl -Lo linuxdeployqt.AppImage "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" \

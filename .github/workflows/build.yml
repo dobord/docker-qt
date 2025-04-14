@@ -2,7 +2,10 @@ name: Build and Push Docker Image
 on:
     push:
         branches:
-            - 'master'
+          - '*'
+          - '!develop'
+        tags:
+          - '*'
 env:
     REGISTRY: ghcr.io
     IMAGE_NAME: ${{ github.repository }}
@@ -75,7 +78,12 @@ jobs:
             id: meta
             uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
             with:
-              images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+              flavor: |
+                suffix=.${{ matrix.qt-version }}-${{ matrix.target-os }}
+
+              images: |
+                ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY }}
+                ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
           - name: Build and push Docker image
             uses: docker/build-push-action@v6.15.0
@@ -83,8 +91,5 @@ jobs:
               context: .
               file: ./${{ matrix.qt-version }}-${{ matrix.target-os }}.Dockerfile
               push: true
-              tags: |
-                ${{ vars.DOCKERHUB_USERNAME }}/docker-qt:${{ matrix.qt-version }}-${{ matrix.target-os }}
-                ghcr.io/${{ github.actor }}/docker-qt:${{ matrix.qt-version }}-${{ matrix.target-os }}
-
+              tags: ${{ steps.meta.outputs.tags }}
               labels: ${{ steps.meta.outputs.labels }}
