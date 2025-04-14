@@ -12,7 +12,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
           matrix:
-            target-os: [linux, android]
+            target-os: [linux, android, wasm]
             qt-version: [6.8]
 
         steps:
