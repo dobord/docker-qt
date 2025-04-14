@@ -146,7 +146,6 @@ RUN git clone https://github.com/emscripten-core/emsdk.git \
 &&  cd emsdk \
 &&  ./emsdk install ${EMSDK_VERSION} \
 &&  ./emsdk activate ${EMSDK_VERSION} \
-&&  echo "source /emsdk/emsdk_env.sh" >> ~/.bashrc \
 &&  ./emsdk_env.sh \
 &&  cd ..
 
