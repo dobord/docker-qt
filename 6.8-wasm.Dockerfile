@@ -10,7 +10,6 @@ ARG CMAKE_VERSION=3.30.4
 ARG QT_VERSION=6.8.3
 ARG QT_CONFIGURE_OPTIONS=" \
     -skip qtopcua \
-    -openssl \
     -release \
     -feature-wasm-simd128 \
     -feature-wasm-exceptions \
