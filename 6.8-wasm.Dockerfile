@@ -12,11 +12,16 @@ ARG QT_CONFIGURE_OPTIONS=" \
     -skip qtopcua \
     -openssl \
     -release \
-    -- \
     -feature-wasm-simd128 \
     -feature-wasm-exceptions \
     -feature-opengles3 \
     -device-option QT_EMSCRIPTEN_ASYNCIFY=2 \
+    -- \
+    -qt-zlib \
+    -qt-libjpeg \
+    -qt-libpng \
+    -qt-freetype \
+    -qt-pcre \
 "
 ARG QT_CONFIGURE_EXTRA_OPTIONS=""
 
