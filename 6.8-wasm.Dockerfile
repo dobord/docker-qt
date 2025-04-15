@@ -177,7 +177,7 @@ RUN set -xe \
     unixodbc-dev \
     zlib1g-dev \
 &&  curl --http1.1 --location --output qt-src.tar.xz https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz \
-&&  tar -xJ qt-src.tar.xz \
+&&  tar -xJf qt-src.tar.xz \
 &&  cd qt-everywhere-src-* \
 &&  ./configure -prefix "${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" ${QT_LINUX_CONFIGURE_OPTIONS} ${QT_LINUX_CONFIGURE_EXTRA_OPTIONS} \
 &&  cmake --build . --parallel \
@@ -185,7 +185,7 @@ RUN set -xe \
 &&  ldconfig -v \
 &&  cd .. \
 &&  rm -rf qt-everywhere-src-* \
-&&  tar -xJ qt-src.tar.xz \
+&&  tar -xJf qt-src.tar.xz \
 &&  cd qt-everywhere-src-* \
 &&  ( bash -c "source ../emsdk/emsdk_env.sh ; \
         em++ --version ; \
