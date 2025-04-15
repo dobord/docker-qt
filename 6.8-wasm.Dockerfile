@@ -9,37 +9,14 @@ ARG EMSDK_VERSION=3.1.56
 ARG CMAKE_VERSION=3.30.4
 ARG QT_VERSION=6.8.3
 ARG QT_CONFIGURE_OPTIONS=" \
-    -openssl-linked \
     -skip qtopcua \
+    -openssl \
     -release \
     -- \
-    -DFEATURE_accessibility=ON \
-    -DFEATURE_cups=ON \
-    -DFEATURE_dbus_linked=ON \
-    -DFEATURE_directfb=OFF \
-    -DFEATURE_doubleconversion=ON \
-    -DFEATURE_fontconfig=ON \
-    -DFEATURE_freetype=ON \
-    -DFEATURE_glib=ON \
-    -DFEATURE_gtk=ON \
-    -DFEATURE_icu=ON \
-    -DFEATURE_jpeg=ON \
-    -DFEATURE_libproxy=ON \
-    -DFEATURE_mimetype_database=OFF \
-    -DFEATURE_pcre2=ON \
-    -DFEATURE_png=ON \
-    -DFEATURE_rpath=OFF \
-    -DFEATURE_sql_mysql=ON \
-    -DFEATURE_sql_odbc=ON \
-    -DFEATURE_sql_psql=ON \
-    -DFEATURE_sql_sqlite=ON \
-    -DFEATURE_ssl=ON \
-    -DFEATURE_system_jpeg=ON \
-    -DFEATURE_system_pcre2=ON \
-    -DFEATURE_system_png=ON \
-    -DFEATURE_system_proxies=ON \
-    -DFEATURE_system_sqlite=ON \
-    -DFEATURE_system_zlib=ON \
+    -feature-wasm-simd128 \
+    -feature-wasm-exceptions \
+    -feature-opengles3 \
+    -device-option QT_EMSCRIPTEN_ASYNCIFY=2
 "
 ARG QT_CONFIGURE_EXTRA_OPTIONS=""
 
