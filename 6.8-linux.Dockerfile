@@ -6,6 +6,7 @@ MAINTAINER Mikhail Kashin <dobordx@yandex.ru>
 
 ARG CMAKE_VERSION=3.30.4
 ARG QT_VERSION=6.8.3
+ARG QT_LINUX_INSTALL_BASE="/opt/qt"
 ARG QT_CONFIGURE_OPTIONS=" \
     -openssl-linked \
     -skip qtopcua \
@@ -138,7 +139,7 @@ RUN set -xe \
     zlib1g-dev \
 &&  curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
 &&  cd qt-everywhere-src-* \
-&&  ./configure -prefix /usr/local ${QT_CONFIGURE_OPTIONS} ${QT_CONFIGURE_EXTRA_OPTIONS} \
+&&  ./configure -prefix "${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" ${QT_CONFIGURE_OPTIONS} ${QT_CONFIGURE_EXTRA_OPTIONS} \
 &&  cmake --build . --parallel \
 &&  cmake --install . \
 &&  ldconfig -v \

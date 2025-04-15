@@ -8,6 +8,8 @@ MAINTAINER Mikhail Kashin <dobordx@yandex.ru>
 ARG EMSDK_VERSION=3.1.56
 ARG CMAKE_VERSION=3.30.4
 ARG QT_VERSION=6.8.3
+ARG QT_LINUX_INSTALL_BASE="/opt/qt"
+ARG QT_WASM_INSTALL_BASE="/opt/qt"
 ARG QT_CONFIGURE_OPTIONS=" \
     -skip qtopcua \
     -release \
@@ -137,7 +139,7 @@ RUN set -xe \
 &&  cd qt-everywhere-src-* \
 &&  ( bash -c "source ../emsdk/emsdk_env.sh ; \
         em++ --version ; \
-        ./configure -qt-host-path /usr/local \
+        ./configure -prefix ${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread -qt-host-path ${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64 \
             -xplatform wasm-emscripten \
             -feature-thread -prefix $PWD/qtbase ${QT_CONFIGURE_OPTIONS} ${QT_CONFIGURE_EXTRA_OPTIONS} \
         && cmake --build . --parallel \
