@@ -50,11 +50,6 @@ ARG QT_WASM_CONFIGURE_OPTIONS=" \
     -feature-wasm-exceptions \
     -feature-opengles3 \
     -device-option QT_EMSCRIPTEN_ASYNCIFY=2 \
-    -qt-zlib \
-    -qt-libjpeg \
-    -qt-libpng \
-    -qt-freetype \
-    -qt-pcre \
     -opengles3 \
     -- \
 "
@@ -74,6 +69,7 @@ ENV QT_LINUX_PATH="${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" \
 
 RUN set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
+&&  df -h \
 &&  apt update \
 &&  apt full-upgrade -y \
 &&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils \
@@ -167,6 +163,7 @@ RUN set -xe \
     pkg-config \
     unixodbc-dev \
     zlib1g-dev \
+&&  df -h \
 &&  curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
 &&  cd qt-everywhere-src-* \
 &&  ./configure -prefix "${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" ${QT_LINUX_CONFIGURE_OPTIONS} ${QT_LINUX_CONFIGURE_EXTRA_OPTIONS} \
@@ -174,18 +171,30 @@ RUN set -xe \
 &&  cmake --install . \
 &&  ldconfig -v \
 &&  cd .. \
+&&  df -h \
 &&  rm -rf qt-everywhere-src-* \
+&&  df -h \
 &&  apt install -y --no-install-recommends \
     bash \
     clang \
     openjdk-11-jdk \
     python3 \
+&&  update-alternatives \
+    --install /usr/bin/gcc gcc /usr/bin/gcc-13 130 \
+    --slave /usr/bin/g++ g++ /usr/bin/g++-13 \
+    --slave /usr/bin/gcov gcov /usr/bin/gcov-13 \
+    --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-13 \
+    --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-13 \
+    --slave /usr/bin/cpp cpp /usr/bin/cpp-13 \
+&&  df -h \
 &&  git clone https://github.com/emscripten-core/emsdk.git \
 &&  cd emsdk \
 &&  ./emsdk install ${EMSDK_VERSION} \
 &&  ./emsdk activate ${EMSDK_VERSION} \
 &&  cd .. \
+&&  df -h \
 &&  curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
+&&  df -h \
 &&  cd qt-everywhere-src-* \
 &&  ( bash -c "source ../emsdk/emsdk_env.sh ; \
         em++ --version ; \
@@ -197,13 +206,16 @@ RUN set -xe \
         && ldconfig -v \
     ") \
 &&  cd .. \
+&&  df -h \
 &&  rm -rf qt-everywhere-src-* \
+&&  df -h \
 &&  curl -Lo linuxdeployqt.AppImage "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" \
 &&  chmod a+x linuxdeployqt.AppImage \
 &&  mv -v linuxdeployqt.AppImage /usr/local/bin/linuxdeployqt \
 &&  apt-get -qq clean \
 &&  locale-gen en_US.UTF-8 && dpkg-reconfigure locales \
-&&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user
+&&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user \
+&&  df -h
 
 USER user
 WORKDIR /home/user
