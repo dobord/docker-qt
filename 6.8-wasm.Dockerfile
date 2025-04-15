@@ -148,7 +148,7 @@ RUN set -xe \
     zlib1g-dev \
 &&  curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
 &&  cd qt-everywhere-src-* \
-&&  ( bash -c "source ./emsdk_env.sh > /dev/null ; \
+&&  ( bash -c "source ../emsdk/emsdk_env.sh ; \
         em++ --version ; \
         ./configure -qt-host-path /opt/qt \
             -xplatform wasm-emscripten \
