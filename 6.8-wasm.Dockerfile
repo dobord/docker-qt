@@ -85,7 +85,6 @@ RUN set -xe \
 &&  apt autoremove -y --purge software-properties-common \
 &&  apt install -y --no-install-recommends \
     bash \
-    clang \
     g++-13 \
     git openssh-client \
     locales sudo \
@@ -185,6 +184,8 @@ RUN set -xe \
 &&  ldconfig -v \
 &&  cd .. \
 &&  rm -rf qt-everywhere-src-* \
+&&  apt install -y --no-install-recommends \
+    clang \
 &&  tar -xJf qt-src.tar.xz \
 &&  cd qt-everywhere-src-* \
 &&  ( bash -c "source ../emsdk/emsdk_env.sh ; \
