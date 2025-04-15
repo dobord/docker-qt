@@ -42,6 +42,7 @@ RUN set -xe \
 &&  apt autoremove -y --purge software-properties-common \
 &&  apt install -y --no-install-recommends \
     bash \
+    clang \
     g++-13 \
     git openssh-client \
     locales sudo \
