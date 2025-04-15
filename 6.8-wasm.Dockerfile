@@ -141,7 +141,7 @@ RUN set -xe \
             -xplatform wasm-emscripten \
             -feature-thread -prefix $PWD/qtbase ${QT_CONFIGURE_OPTIONS} ${QT_CONFIGURE_EXTRA_OPTIONS} \
         && cmake --build . --parallel \
-             -t qtbase -t qtgui -t qtnetwork -t qtwidgets -t qtqml -t qtquick \
+             -t qtbase -t qtnetwork -t qtwidgets -t qtqml -t qtquick \
              -t qtquickcontrols -t qtquicklayouts -t qtcore5compat \
              -t qtimageformats -t qtopengl -t qtsvg -t qtwebsockets -t qtdeclarative \
         && cmake --install . \
