@@ -16,7 +16,7 @@ ARG QT_CONFIGURE_OPTIONS=" \
     -feature-wasm-simd128 \
     -feature-wasm-exceptions \
     -feature-opengles3 \
-    -device-option QT_EMSCRIPTEN_ASYNCIFY=2
+    -device-option QT_EMSCRIPTEN_ASYNCIFY=2 \
 "
 ARG QT_CONFIGURE_EXTRA_OPTIONS=""
 
