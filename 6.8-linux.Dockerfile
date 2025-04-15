@@ -42,6 +42,11 @@ ARG QT_CONFIGURE_OPTIONS=" \
 "
 ARG QT_CONFIGURE_EXTRA_OPTIONS=""
 
+ENV QT_LINUX_PATH="${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" \
+    QT_HOST_PATH="${QT_LINUX_PATH}" \
+    QT_VERSION="${QT_VERSION}" \
+    PATH="${QT_LINUX_PATH}/bin:${PATH}"
+
 RUN set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  apt update \
