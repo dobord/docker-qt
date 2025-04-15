@@ -84,13 +84,10 @@ RUN set -xe \
 &&  add-apt-repository ppa:ubuntu-toolchain-r/test \
 &&  apt autoremove -y --purge software-properties-common \
 &&  apt install -y --no-install-recommends \
-    bash \
     g++-13 \
     git openssh-client \
     locales sudo \
     fuse file \
-    openjdk-11-jdk \
-    python3 \
 &&  update-alternatives \
     --install /usr/bin/gcc gcc /usr/bin/gcc-13 130 \
     --slave /usr/bin/g++ g++ /usr/bin/g++-13 \
@@ -98,11 +95,6 @@ RUN set -xe \
     --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-13 \
     --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-13 \
     --slave /usr/bin/cpp cpp /usr/bin/cpp-13 \
-&&  git clone https://github.com/emscripten-core/emsdk.git \
-&&  cd emsdk \
-&&  ./emsdk install ${EMSDK_VERSION} \
-&&  ./emsdk activate ${EMSDK_VERSION} \
-&&  cd .. \
 &&  apt install -y --no-install-recommends \
     libasound2-dev \
     libatspi2.0-dev \
@@ -175,8 +167,7 @@ RUN set -xe \
     pkg-config \
     unixodbc-dev \
     zlib1g-dev \
-&&  curl --http1.1 --location --output qt-src.tar.xz https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz \
-&&  tar -xJf qt-src.tar.xz \
+&&  curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
 &&  cd qt-everywhere-src-* \
 &&  ./configure -prefix "${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" ${QT_LINUX_CONFIGURE_OPTIONS} ${QT_LINUX_CONFIGURE_EXTRA_OPTIONS} \
 &&  cmake --build . --parallel \
@@ -185,8 +176,16 @@ RUN set -xe \
 &&  cd .. \
 &&  rm -rf qt-everywhere-src-* \
 &&  apt install -y --no-install-recommends \
+    bash \
     clang \
-&&  tar -xJf qt-src.tar.xz \
+    openjdk-11-jdk \
+    python3 \
+&&  git clone https://github.com/emscripten-core/emsdk.git \
+&&  cd emsdk \
+&&  ./emsdk install ${EMSDK_VERSION} \
+&&  ./emsdk activate ${EMSDK_VERSION} \
+&&  cd .. \
+&&  curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
 &&  cd qt-everywhere-src-* \
 &&  ( bash -c "source ../emsdk/emsdk_env.sh ; \
         em++ --version ; \
@@ -199,7 +198,6 @@ RUN set -xe \
     ") \
 &&  cd .. \
 &&  rm -rf qt-everywhere-src-* \
-&&  rm -f qt-src.tar.xz \
 &&  curl -Lo linuxdeployqt.AppImage "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" \
 &&  chmod a+x linuxdeployqt.AppImage \
 &&  mv -v linuxdeployqt.AppImage /usr/local/bin/linuxdeployqt \
