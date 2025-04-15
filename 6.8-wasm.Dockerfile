@@ -45,7 +45,8 @@ ARG QT_CONFIGURE_EXTRA_OPTIONS=""
 
 RUN set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
-&&  apt update \
+&&  sudo su ; \
+    apt update \
 &&  apt full-upgrade -y \
 &&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils \
 &&  curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh \
