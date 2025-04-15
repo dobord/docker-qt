@@ -1,7 +1,7 @@
 # Docker container to build Qt 6.8 for WebAssembly with latest cmake and linuxdeployqt
 # Image: dobord/docker-qt:6.8-wasm
 
-FROM ubuntu:20.04
+FROM dobord/docker-qt:6.8-linux
 MAINTAINER Mikhail Kashin <dobordx@yandex.ru>
 
 # Set version according to https://doc.qt.io/qt-6.8/wasm.html
@@ -150,7 +150,7 @@ RUN set -xe \
 &&  cd qt-everywhere-src-* \
 &&  ( bash -c "source ../emsdk/emsdk_env.sh ; \
         em++ --version ; \
-        ./configure -qt-host-path /opt/qt \
+        ./configure -qt-host-path /usr/local \
             -xplatform wasm-emscripten \
             -feature-thread -prefix $PWD/qtbase ${QT_CONFIGURE_OPTIONS} ${QT_CONFIGURE_EXTRA_OPTIONS} \
         && cmake --build . --parallel \
