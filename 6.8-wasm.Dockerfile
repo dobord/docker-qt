@@ -1,16 +1,49 @@
 # Docker container to build Qt 6.8 for WebAssembly with latest cmake and linuxdeployqt
 # Image: dobord/docker-qt:6.8-wasm
 
-FROM dobord/docker-qt:6.8-linux
+FROM ubuntu:20.04
 MAINTAINER Mikhail Kashin <dobordx@yandex.ru>
 
 # Set version according to https://doc.qt.io/qt-6.8/wasm.html
 ARG EMSDK_VERSION=3.1.56
 ARG CMAKE_VERSION=3.30.4
 ARG QT_VERSION=6.8.3
+ARG QT_LINUX_CONFIGURE_OPTIONS=" \
+    -openssl-linked \
+    -skip qtopcua \
+    -release \
+    -- \
+    -DFEATURE_accessibility=ON \
+    -DFEATURE_cups=ON \
+    -DFEATURE_dbus_linked=ON \
+    -DFEATURE_directfb=OFF \
+    -DFEATURE_doubleconversion=ON \
+    -DFEATURE_fontconfig=ON \
+    -DFEATURE_freetype=ON \
+    -DFEATURE_glib=ON \
+    -DFEATURE_gtk=ON \
+    -DFEATURE_icu=ON \
+    -DFEATURE_jpeg=ON \
+    -DFEATURE_libproxy=ON \
+    -DFEATURE_mimetype_database=OFF \
+    -DFEATURE_pcre2=ON \
+    -DFEATURE_png=ON \
+    -DFEATURE_rpath=OFF \
+    -DFEATURE_sql_mysql=ON \
+    -DFEATURE_sql_odbc=ON \
+    -DFEATURE_sql_psql=ON \
+    -DFEATURE_sql_sqlite=ON \
+    -DFEATURE_ssl=ON \
+    -DFEATURE_system_jpeg=ON \
+    -DFEATURE_system_pcre2=ON \
+    -DFEATURE_system_png=ON \
+    -DFEATURE_system_proxies=ON \
+    -DFEATURE_system_sqlite=ON \
+    -DFEATURE_system_zlib=ON \
+"
+ARG QT_LINUX_CONFIGURE_EXTRA_OPTIONS=""
 ARG QT_LINUX_INSTALL_BASE="/opt/qt"
-ARG QT_WASM_INSTALL_BASE="/opt/qt"
-ARG QT_CONFIGURE_OPTIONS=" \
+ARG QT_WASM_CONFIGURE_OPTIONS=" \
     -skip qtopcua \
     -release \
     -feature-wasm-simd128 \
@@ -22,14 +55,16 @@ ARG QT_CONFIGURE_OPTIONS=" \
     -qt-libpng \
     -qt-freetype \
     -qt-pcre \
+    -opengles3 \
     -- \
 "
-ARG QT_CONFIGURE_EXTRA_OPTIONS=""
-
-USER root
-WORKDIR /
-ENV HOME=/root
-
+ARG QT_WASM_CONFIGURE_EXTRA_OPTIONS=""
+ARG QT_WASM_INSTALL_BASE="/opt/qt"
+ARG QT_WASM_CMAKE_TARGETS=" \
+    -t qtbase \
+    -t qtdeclarative \
+    -t qtimageformats \
+"
 
 RUN set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
@@ -135,20 +170,29 @@ RUN set -xe \
     pkg-config \
     unixodbc-dev \
     zlib1g-dev \
-&&  curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
+&&  curl -o qt-src.tar.xz --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz \
+&&  tar xJ qt-src.tar.xz \
+&&  cd qt-everywhere-src-* \
+&&  ./configure -prefix "${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" ${QT_LINUX_CONFIGURE_OPTIONS} ${QT_LINUX_CONFIGURE_EXTRA_OPTIONS} \
+&&  cmake --build . --parallel \
+&&  cmake --install . \
+&&  ldconfig -v \
+&&  cd .. \
+&&  rm -rf qt-everywhere-src-* \
+&&  tar xJ qt-src.tar.xz \
 &&  cd qt-everywhere-src-* \
 &&  ( bash -c "source ../emsdk/emsdk_env.sh ; \
         em++ --version ; \
         ./configure -prefix ${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread -qt-host-path ${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64 \
             -xplatform wasm-emscripten \
-            -feature-thread -prefix $PWD/qtbase ${QT_CONFIGURE_OPTIONS} ${QT_CONFIGURE_EXTRA_OPTIONS} \
-        && cmake --build . --parallel \
-             -t qtbase -t qtimageformats -t qtdeclarative \
+            -feature-thread -prefix $PWD/qtbase ${QT_WASM_CONFIGURE_OPTIONS} ${QT_WASM_CONFIGURE_EXTRA_OPTIONS} \
+        && cmake --build . --parallel ${QT_WASM_CMAKE_TARGETS} \
         && cmake --install . \
         && ldconfig -v \
     ") \
 &&  cd .. \
 &&  rm -rf qt-everywhere-src-* \
+&&  rm -f qt-src.tar.xz \
 &&  curl -Lo linuxdeployqt.AppImage "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" \
 &&  chmod a+x linuxdeployqt.AppImage \
 &&  mv -v linuxdeployqt.AppImage /usr/local/bin/linuxdeployqt \
