@@ -25,7 +25,7 @@ ENV ANDROID_SDK_ROOT=/opt/android-sdk \
 ENV ANDROID_NDK_HOME=${ANDROID_NDK_ROOT} \
     PATH=/opt/android-sdk/cmdline-tools/latest/bin:${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin:${QT_ANDROID_PATH}/bin:${PATH}
 
-copy ./aqt.cfg /root/aqt.cfg
+COPY ./aqt.cfg /root/
 
 RUN set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
