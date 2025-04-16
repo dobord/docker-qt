@@ -68,8 +68,7 @@ ENV PATH="${QT_WASM_PATH}/bin:${PATH}"
 
 WORKDIR /root
 
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/root/.cache,sharing=locked \
+RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  apt update \
