@@ -52,10 +52,15 @@ RUN --mount=type=cache,target=/qt-src set -xe \
 &&  mkdir /qt-src \
 &&  apt update \
 &&  apt full-upgrade -y \
-&&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils
-&&  cd /qt-src \
-&&  curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz \
-&&  cd /root \
+&&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils  ; \
+    if ! [ -e "/qt-src/qt-everywhere-src-${QT_VERSION}.tar.xz" ] ; then \
+        cd /qt-src \
+&&      curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz \
+&&      cd /root \
+    else \
+        echo "use qt-src cache" \
+    fi \
+    ls -lah /qt-src \
 &&  curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh \
 &&  chmod +x install-cmake.sh \
 &&  ./install-cmake.sh --skip-license --prefix=/usr/local \
