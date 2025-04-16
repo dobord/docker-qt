@@ -64,7 +64,6 @@ ENV QT_LINUX_PATH="${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64"
 ENV QT_HOST_PATH="${QT_LINUX_PATH}"
 ENV QT_WASM_PATH="${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread"
 ENV QT_VERSION="${QT_VERSION}"
-ENV PATH="${QT_WASM_PATH}/bin:${PATH}"
 
 WORKDIR /root
 
@@ -229,6 +228,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user \
 &&  echo -e "\n. /emsdk/emsdk_env.sh" >>/home/user/.bashrc \
 &&  chown user:user /home/user/.bashrc \
+&&  echo -e "export PATH="${QT_WASM_PATH}/bin:${PATH}" >>/home/user/.bashrc \
 &&  df -h
 
 USER user
