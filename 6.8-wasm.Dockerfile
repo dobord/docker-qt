@@ -2,7 +2,6 @@
 # Image: dobord/docker-qt:6.8-wasm
 
 FROM ubuntu:20.04
-MAINTAINER Mikhail Kashin <dobordx@yandex.ru>
 
 # Set version according to https://doc.qt.io/qt-6.8/wasm.html
 ARG EMSDK_VERSION=3.1.56
