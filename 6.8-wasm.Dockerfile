@@ -71,7 +71,7 @@ RUN set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  mkdir /qt-src
 
-RUN --mount=type=cache,target=/opt/qt-src set -xe \
+RUN --mount=type=cache,target=/qt-src set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  cd /qt-src \
 &&  curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz \
