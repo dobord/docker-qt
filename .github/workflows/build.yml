@@ -109,6 +109,13 @@ jobs:
               path: qt-${{ matrix.qt-version }}-src
               key: qt-${{ steps.read-dockerfile.outputs.qt-version }}-src-cache
 
+          - if: ${{ matrix.target-os == 'android' }}
+            name: Qt Binary Cache for Docker with QtAndroid
+            uses: actions/cache@v4
+            with:
+              path: qt-${{ matrix.qt-version }}-src
+              key: qt-${{ steps.read-dockerfile.outputs.qt-version }}-android-cache
+
           - name: Inject Qt Sources Cache into Docker
             uses: reproducible-containers/buildkit-cache-dance@4b2444fec0c0fb9dbf175a96c094720a692ef810 # v2.1.4
             with:
