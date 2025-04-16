@@ -58,7 +58,10 @@ jobs:
               sudo dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -nr | head
               df . -h
               sudo du /usr/ -hx -d 4 --threshold=1G | sort -hr | head
-
+              
+          - name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v3
+        
           - name: Checkout code
             uses: actions/checkout@v4
 
