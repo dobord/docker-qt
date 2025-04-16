@@ -25,7 +25,7 @@ ENV ANDROID_SDK_ROOT=/opt/android-sdk \
 ENV ANDROID_NDK_HOME=${ANDROID_NDK_ROOT} \
     PATH=/opt/android-sdk/cmdline-tools/latest/bin:${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin:${QT_ANDROID_PATH}/bin:${PATH}
 
-COPY ./aqt.cfg /root/
+COPY ./aqt.cfg /etc/aqt/
 
 RUN set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
@@ -61,10 +61,10 @@ RUN set -xe \
 &&  sdkmanager --update \
 &&  sdkmanager "platforms;android-${ANDROID_PLATFORM_VERSION}" "platform-tools" "build-tools;${BUILD_TOOLS_VERSION}" "ndk;${ANDROID_NDK_VERSION}" ${SDKMANAGER_EXTRA_ARGS} \
 &&  pip install --break-system-packages aqtinstall \
-&&  aqt -c aqt.cfg install-qt linux desktop ${QT_VERSION} linux_gcc_64 --outputdir "${QT_LINUX_INSTALL_BASE}" --module qtshadertools \
+&&  aqt -c /etc/aqt/aqt.cfg install-qt linux desktop ${QT_VERSION} linux_gcc_64 --outputdir "${QT_LINUX_INSTALL_BASE}" --module qtshadertools \
 &&  curl -Lo openssl.tar.gz https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz \
 &&  for QT_ARCH in ${QT_ARCHS} ; do \
-        aqt -c aqt.cfg install-qt linux android ${QT_VERSION} android_${QT_ARCH} --outputdir "${QT_ANDRIOD_INSTALL_BASE}" ${AQT_EXTRA_ARGS} ; \
+        aqt -c /etc/aqt/aqt.cfg install-qt linux android ${QT_VERSION} android_${QT_ARCH} --outputdir "${QT_ANDRIOD_INSTALL_BASE}" ${AQT_EXTRA_ARGS} ; \
         case $QT_ARCH in \
             "arm64_v8a" ) OPENSSL_ARCH=arm64  ;; \
             "armv7"     ) OPENSSL_ARCH=arm    ;; \
