@@ -125,7 +125,7 @@ jobs:
             with:
               cache-map: |
                 {
-                  "root-cache": "/root/cache"
+                  "root-cache": "/root/.cache"
                 }
               skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 
