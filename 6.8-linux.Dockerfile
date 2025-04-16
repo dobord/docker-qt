@@ -2,7 +2,6 @@
 # Image: dobord/docker-qt:6.8-linux
 
 FROM ubuntu:20.04
-MAINTAINER Mikhail Kashin <dobordx@yandex.ru>
 
 ARG CMAKE_VERSION=3.30.4
 ARG QT_VERSION=6.8.3
@@ -42,10 +41,10 @@ ARG QT_CONFIGURE_OPTIONS=" \
 "
 ARG QT_CONFIGURE_EXTRA_OPTIONS=""
 
-ENV QT_LINUX_PATH="${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" \
-    QT_HOST_PATH="${QT_LINUX_PATH}" \
-    QT_VERSION="${QT_VERSION}" \
-    PATH="${QT_LINUX_PATH}/bin:${PATH}"
+ENV QT_LINUX_PATH="${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64"
+ENV QT_HOST_PATH="${QT_LINUX_PATH}"
+ENV QT_VERSION="${QT_VERSION}"
+ENV PATH="${QT_LINUX_PATH}/bin:${PATH}"
 
 RUN --mount=type=cache,target=/qt-src set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
@@ -54,12 +53,12 @@ RUN --mount=type=cache,target=/qt-src set -xe \
 &&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils  ; \
     if ! [ -e "/qt-src/qt-everywhere-src-${QT_VERSION}.tar.xz" ] ; then \
         cd /qt-src \
-&&      curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz \
-&&      cd /root ; \
+&&      curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz ; \
     else \
         echo "use qt-src cache" ; \
     fi ; \
-    ls -lah /qt-src \
+    cd / \
+&&  ls -lah /qt-src \
 &&  curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh \
 &&  chmod +x install-cmake.sh \
 &&  ./install-cmake.sh --skip-license --prefix=/usr/local \
