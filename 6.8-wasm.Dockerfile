@@ -66,19 +66,23 @@ ENV QT_WASM_PATH="${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread"
 ENV QT_VERSION="${QT_VERSION}"
 ENV PATH="${QT_WASM_PATH}/bin:${PATH}"
 
-RUN --mount=type=cache,target=/qt-src set -xe \
+WORKDIR /root
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  apt update \
 &&  apt full-upgrade -y \
 &&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils ; \
-    if ! [ -e "/qt-src/qt-everywhere-src-${QT_VERSION}.tar.xz" ] ; then \
-        cd /qt-src \
-&&      curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz ;
+    if ! [ -e "/root/.cache/qt-everywhere-src-${QT_VERSION}.tar.xz" ] ; then \
+        cd /root/.cache \
+&&      curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz ; \
     else \
-        echo "use qt-src cache" ; \
+        echo "use download-cache" ; \
     fi ; \
-    cd / \
-&&  ls -lah /qt-src \
+    cd /root \
+&&  ls -lah /root/.cache \
 &&  df -h \
 &&  curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh \
 &&  chmod +x install-cmake.sh \
@@ -171,7 +175,7 @@ RUN --mount=type=cache,target=/qt-src set -xe \
     unixodbc-dev \
     zlib1g-dev \
 &&  df -h \
-&&  tar -xJf /qt-src/qt-everywhere-src-* \
+&&  tar -xJf "/root/.cache/qt-everywhere-src-${QT_VERSION}.tar.xz" \
 &&  cd qt-everywhere-src-* \
 &&  ./configure -prefix "${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" ${QT_LINUX_CONFIGURE_OPTIONS} ${QT_LINUX_CONFIGURE_EXTRA_OPTIONS} \
 &&  cmake --build . --parallel \
@@ -194,17 +198,18 @@ RUN --mount=type=cache,target=/qt-src set -xe \
     --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-13 \
     --slave /usr/bin/cpp cpp /usr/bin/cpp-13 \
 &&  df -h \
+&&  cd / \
 &&  git clone https://github.com/emscripten-core/emsdk.git \
 &&  cd emsdk \
 &&  ./emsdk install ${EMSDK_VERSION} \
 &&  ./emsdk activate ${EMSDK_VERSION} \
 &&  echo "emsdk installed on $(pwd)" \
-&&  cd .. \
+&&  cd /root \
 &&  df -h \
-&&  tar -xJf /qt-src/qt-everywhere-src-* \
+&&  tar -xJf "/root/.cache/qt-everywhere-src-${QT_VERSION}.tar.xz" \
 &&  df -h \
 &&  cd qt-everywhere-src-* \
-&&  ( bash -c "set -xe ; chmod +x ../emsdk/emsdk_env.sh ; source ../emsdk/emsdk_env.sh ; \
+&&  ( bash -c "set -xe ; chmod +x /emsdk/emsdk_env.sh ; source /emsdk/emsdk_env.sh ; \
         em++ --version ; \
         ./configure -prefix ${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread -qt-host-path ${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64 \
             -xplatform wasm-emscripten \
@@ -223,8 +228,8 @@ RUN --mount=type=cache,target=/qt-src set -xe \
 &&  apt-get -qq clean \
 &&  locale-gen en_US.UTF-8 && dpkg-reconfigure locales \
 &&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user \
-&&  echo -e "\n. /emsdk/emsdk_env.sh" >>/home/user/.bashrc
-&&  chown user:user /home/user/.bashrc
+&&  echo -e "\n. /emsdk/emsdk_env.sh" >>/home/user/.bashrc \
+&&  chown user:user /home/user/.bashrc \
 &&  df -h
 
 USER user

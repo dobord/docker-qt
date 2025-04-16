@@ -46,19 +46,23 @@ ENV QT_HOST_PATH="${QT_LINUX_PATH}"
 ENV QT_VERSION="${QT_VERSION}"
 ENV PATH="${QT_LINUX_PATH}/bin:${PATH}"
 
-RUN --mount=type=cache,target=/qt-src set -xe \
+WORKDIR /root
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  apt update \
 &&  apt full-upgrade -y \
 &&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils  ; \
-    if ! [ -e "/qt-src/qt-everywhere-src-${QT_VERSION}.tar.xz" ] ; then \
-        cd /qt-src \
+    if ! [ -e "/root/.cache/qt-everywhere-src-${QT_VERSION}.tar.xz" ] ; then \
+        cd /root/.cache \
 &&      curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz ; \
     else \
-        echo "use qt-src cache" ; \
+        echo "use cache" ; \
     fi ; \
-    cd / \
-&&  ls -lah /qt-src \
+    cd /root \
+&&  ls -lah /root/.cache \
 &&  curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh \
 &&  chmod +x install-cmake.sh \
 &&  ./install-cmake.sh --skip-license --prefix=/usr/local \
@@ -149,7 +153,7 @@ RUN --mount=type=cache,target=/qt-src set -xe \
     pkg-config \
     unixodbc-dev \
     zlib1g-dev \
-&&  tar -xJf /qt-src/qt-everywhere-src-* \
+&&  tar -xJf "/root/.cache/qt-everywhere-src-${QT_VERSION}.tar.xz" \
 &&  cd qt-everywhere-src-* \
 &&  ./configure -prefix "${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" ${QT_CONFIGURE_OPTIONS} ${QT_CONFIGURE_EXTRA_OPTIONS} \
 &&  cmake --build . --parallel \

@@ -9,6 +9,7 @@ on:
 env:
     REGISTRY: ghcr.io
     IMAGE_NAME: ${{ github.repository }}
+    LATEST_QT: 6.8
 
 jobs:
     build:
@@ -75,7 +76,8 @@ jobs:
                 echo "$FILENAME does not exists"
                 exit 1
               fi
-              echo "::set-output name=qt-version::$(cat $FILENAME | grep -oP 'ARG QT_VERSION=[0-9.]+' | grep -oP '[0-9]\.[0-9]\.[0-9]')"
+              QT_VERSION=$(cat $FILENAME | grep -oP 'ARG QT_VERSION=[0-9.]+' | grep -oP '[0-9]\.[0-9]\.[0-9]')
+              echo "qt-version=$QT_VERSION" >> "$GITHUB_OUTPUT"
 
           - name: Login to DockerHub
             uses: docker/login-action@v3.4.0
@@ -93,7 +95,7 @@ jobs:
 
           - name: Extract metadata (tags, labels) for Docker
             id: meta
-            uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+            uses: docker/metadata-action@v5.7.0
             with:
               flavor: |
                 suffix=.${{ matrix.qt-version }}-${{ matrix.target-os }}
@@ -102,24 +104,34 @@ jobs:
                 ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY }}
                 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-          - if: ${{ matrix.target-os != 'android' }}
-            name: Qt Sources Cache for Docker
-            uses: actions/cache@v4
-            with:
-              path: qt-${{ matrix.qt-version }}-src
-              key: qt-${{ steps.read-dockerfile.outputs.qt-version }}-src-cache
+              tags: |
+                type=schedule
+                type=ref,event=branch
+                type=ref,event=tag
+                type=ref,event=pr
+                type=raw,value=latest-${{ matrix.target-os }},enable=${{ (matrix.qt-version == env.LATEST_QT) && (github.ref == format('refs/heads/{0}', 'main')) }}
 
-          - if: ${{ matrix.target-os == 'android' }}
-            name: Qt Binary Cache for Docker with QtAndroid
+          - name: Runner Cache
+            id: cache
             uses: actions/cache@v4
             with:
-              path: qt-${{ matrix.qt-version }}-src
-              key: qt-${{ steps.read-dockerfile.outputs.qt-version }}-android-cache
+              path: |
+                var-cache-apt
+                var-lib-apt
+                root-cache
+
+              key: docker-qt-runner-cache-${{ steps.read-dockerfile.outputs.qt-version }}-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}-${{ github.run_attempt }}
 
           - name: Inject Qt Sources Cache into Docker
-            uses: reproducible-containers/buildkit-cache-dance@4b2444fec0c0fb9dbf175a96c094720a692ef810 # v2.1.4
+            uses: reproducible-containers/buildkit-cache-dance@v3.1.2
             with:
-              cache-source: qt-${{ matrix.qt-version }}-src
+              cache-map: |
+                {
+                  "var-cache-apt": "/var/cache/apt",
+                  "var-lib-apt": "/var/lib/apt",
+                  "root-cache": "/root/cache"
+                }
+              skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 
           - name: Build and push Docker image
             uses: docker/build-push-action@v6.15.0

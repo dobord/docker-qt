@@ -2,7 +2,6 @@
 # Image: dobord/docker-qt:6.8-android
 
 FROM ubuntu:24.04
-MAINTAINER Mikhail Kashin <dobordx@yandex.ru>
 
 ARG ANDROID_PLATFORM_VERSION=34
 ARG ANDROID_NDK_VERSION=26.1.10909125
@@ -27,7 +26,10 @@ ENV ANDROID_NDK_HOME=${ANDROID_NDK_ROOT} \
 
 COPY ./aqt.cfg /etc/aqt/
 
-RUN set -xe \
+WORKDIR /root
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/root/.cache,sharing=locked \
+    set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  BUILD_PACKAGES="python3-pip" \
 &&  apt update \
