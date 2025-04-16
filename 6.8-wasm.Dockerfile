@@ -69,10 +69,10 @@ ENV QT_LINUX_PATH="${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" \
 
 RUN set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
+&&  mkdir /qt-src \
 &&  apt update \
 &&  apt full-upgrade -y \
-&&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils \
-&&  mkdir /qt-src \
+&&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils
 
 RUN --mount=type=cache,target=/qt-src set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
