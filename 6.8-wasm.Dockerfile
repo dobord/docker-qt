@@ -69,6 +69,16 @@ ENV QT_LINUX_PATH="${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" \
 
 RUN set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
+&&  mkdir /qt-src
+
+RUN --mount=type=cache,target=/opt/qt-src set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
+&&  cd /qt-src
+&&  curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz \
+&&  cd /
+
+RUN set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
 &&  df -h \
 &&  apt update \
 &&  apt full-upgrade -y \
@@ -164,7 +174,7 @@ RUN set -xe \
     unixodbc-dev \
     zlib1g-dev \
 &&  df -h \
-&&  curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
+&&  tar -xJf /qt-src/qt-everywhere-src-* \
 &&  cd qt-everywhere-src-* \
 &&  ./configure -prefix "${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" ${QT_LINUX_CONFIGURE_OPTIONS} ${QT_LINUX_CONFIGURE_EXTRA_OPTIONS} \
 &&  cmake --build . --parallel \
@@ -193,7 +203,7 @@ RUN set -xe \
 &&  ./emsdk activate ${EMSDK_VERSION} \
 &&  cd .. \
 &&  df -h \
-&&  curl --http1.1 --location --output - https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz | tar xJ \
+&&  tar -xJf /qt-src/qt-everywhere-src-* \
 &&  df -h \
 &&  cd qt-everywhere-src-* \
 &&  ( bash -c "source ../emsdk/emsdk_env.sh ; \
