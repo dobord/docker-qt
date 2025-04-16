@@ -116,8 +116,6 @@ jobs:
             uses: actions/cache@v4
             with:
               path: |
-                var-cache-apt
-                var-lib-apt
                 root-cache
 
               key: docker-qt-runner-cache-${{ steps.read-dockerfile.outputs.qt-version }}-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}-${{ github.run_attempt }}
@@ -127,8 +125,6 @@ jobs:
             with:
               cache-map: |
                 {
-                  "var-cache-apt": "/var/cache/apt",
-                  "var-lib-apt": "/var/lib/apt",
                   "root-cache": "/root/cache"
                 }
               skip-extraction: ${{ steps.cache.outputs.cache-hit }}
