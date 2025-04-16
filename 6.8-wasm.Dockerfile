@@ -75,10 +75,10 @@ RUN --mount=type=cache,target=/qt-src set -xe \
     if ! [ -e "/qt-src/qt-everywhere-src-${QT_VERSION}.tar.xz" ] ; then \
         cd /qt-src \
 &&      curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz \
-&&      cd /root \
+&&      cd /root ; \
     else \
-        echo "use qt-src cache" \
-    fi \
+        echo "use qt-src cache" ; \
+    fi ; \
     ls -lah /qt-src \
 &&  df -h \
 &&  curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh \
