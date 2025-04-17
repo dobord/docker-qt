@@ -47,10 +47,10 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
-&&  locale-gen en_US.UTF-8 && dpkg-reconfigure locales \
 &&  apt update \
 &&  apt full-upgrade -y \
-&&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils
+&&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils locales \
+&&  locale-gen en_US.UTF-8 && dpkg-reconfigure locales
 
 WORKDIR /qt/src
 RUN --mount=type=cache,target=/qt/src,sharing=locked \
