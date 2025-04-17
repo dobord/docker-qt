@@ -120,7 +120,7 @@ jobs:
 
               key: docker-qt-runner-cache-${{ steps.read-dockerfile.outputs.qt-version }}-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}-${{ github.run_attempt }}
 
-          - name: Inject Qt Sources Cache into Docker
+          - name: Inject Runner Cache into Docker
             uses: reproducible-containers/buildkit-cache-dance@v3.1.2
             with:
               cache-map: |
