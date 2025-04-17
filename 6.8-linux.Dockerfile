@@ -55,8 +55,12 @@ WORKDIR /qt/src
 RUN --mount=type=cache,target=/qt/src,sharing=locked \
     set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
-&&  curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz \
-&&  ls -lah
+&&  if ! [ -e "qt-everywhere-src-${QT_VERSION}.tar.xz" ] ; then \
+        curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz ; \
+    else \
+        echo "use cache" ; \
+    fi ; \
+    ls -lah
 
 WORKDIR /cmake/src
 RUN --mount=type=cache,target=/cmake/src,sharing=locked \
