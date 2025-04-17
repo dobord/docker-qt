@@ -58,12 +58,6 @@ ARG QT_WASM_CMAKE_TARGETS=" \
     -t qtbase \
     -t qtdeclarative \
     -t qtimageformats \
-"
-
-ENV QT_LINUX_PATH="${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64"
-ENV QT_HOST_PATH="${QT_LINUX_PATH}"
-ENV QT_WASM_PATH="${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread"
-ENV QT_VERSION="${QT_VERSION}"
 
 WORKDIR /root
 
@@ -226,9 +220,14 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  apt-get -qq clean \
 &&  locale-gen en_US.UTF-8 && dpkg-reconfigure locales \
 &&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user \
-&&  echo -e "\n. /emsdk/emsdk_env.sh" >>/home/user/.bashrc \
+&&  echo -e "-n /emsdk/emsdk_env.sh \
+      export QT_LINUX_PATH=\"${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64\" -n \
+      export QT_WASM_PATH=\"${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread\" -n \
+      export QT_HOST_PATH=\"${QT_LINUX_PATH}\" -n \
+      export QT_VERSION=\"${QT_VERSION}\" -n \
+      export PATH=${QT_WASM_PATH}/bin:${PATH} -n
+      " >>/home/user/.bashrc \
 &&  chown user:user /home/user/.bashrc \
-&&  echo -e "export PATH="${QT_WASM_PATH}/bin:${PATH}" >>/home/user/.bashrc \
 &&  df -h
 
 USER user
