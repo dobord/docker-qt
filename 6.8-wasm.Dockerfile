@@ -238,6 +238,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     set -xe \
 &&  df -h \
 &&  export DEBIAN_FRONTEND=noninteractive \
+&&  cd qt-everywhere-src-* \
 &&  ( bash -c "set -xe ; chmod +x /emsdk/emsdk_env.sh ; source /emsdk/emsdk_env.sh ; \
         em++ --version ; \
         ./configure -prefix ${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread -qt-host-path ${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64 \
