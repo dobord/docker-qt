@@ -43,6 +43,8 @@ jobs:
                 libfreetype6 libfreetype6-dev libfontconfig1 libfontconfig1-dev \
                 snmp pollinate libpq-dev postgresql-client powershell ruby-full \
                 sphinxsearch subversion mongodb-org azure-cli microsoft-edge-stable \
+                openjdk-11-jre-headless libllvm19 libllvm17t64 libllvm18 \
+                google-cloud-cli google-cloud-cli-anthoscli \
                 -y -f >/dev/null 2>&1
               sudo aptitude purge google-cloud-sdk -f -y >/dev/null 2>&1
               sudo aptitude purge microsoft-edge-stable -f -y >/dev/null 2>&1 || true
