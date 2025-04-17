@@ -58,6 +58,7 @@ ARG QT_WASM_CMAKE_TARGETS=" \
     -t qtbase \
     -t qtdeclarative \
     -t qtimageformats \
+"
 
 WORKDIR /root
 
