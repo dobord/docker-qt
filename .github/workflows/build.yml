@@ -147,11 +147,27 @@ jobs:
                 {
                   "root-cache": "/root/.cache",
                   "var-cache-apt": "/var/cache/apt",
-                  "var-lib-apt": "/var/lib/apt",
-                  "qt-src-cache": "/qt/src",
+                  "var-lib-apt": "/var/lib/apt"
+                }
+              skip-extraction: ${{ steps.runner-cache.outputs.cache-hit }}
+
+          - name: Inject Qt Source Cache into Docker
+            uses: reproducible-containers/buildkit-cache-dance@v3.1.2
+            with:
+              cache-map: |
+                {
+                  "qt-src-cache": "/qt/src"
+                }
+              skip-extraction: ${{ steps.qt-src-cache.outputs.cache-hit }}
+
+          - name: Inject CMake Source Cache into Docker
+            uses: reproducible-containers/buildkit-cache-dance@v3.1.2
+            with:
+              cache-map: |
+                {
                   "cmake-src-cache": "/cmake/src"
                 }
-              skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+              skip-extraction: ${{ steps.cmake-src-cache.outputs.cache-hit }}
 
           - name: Build and push Docker image
             uses: docker/build-push-action@v6.15.0
