@@ -47,6 +47,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
+&&  locale-gen en_US.UTF-8 && dpkg-reconfigure locales \
 &&  apt update \
 &&  apt full-upgrade -y \
 &&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils
@@ -195,7 +196,6 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  curl -Lo linuxdeployqt.AppImage "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" \
 &&  chmod a+x linuxdeployqt.AppImage \
 &&  mv -v linuxdeployqt.AppImage /usr/local/bin/linuxdeployqt \
-&&  locale-gen en_US.UTF-8 && dpkg-reconfigure locales \
 &&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user \
 &&  echo -e "-nexport PATH=${QT_LINUX_PATH}/bin:${PATH} -n \
       export QT_LINUX_PATH=\"${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64\" -n \
