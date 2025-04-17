@@ -226,7 +226,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
       export QT_WASM_PATH=\"${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread\" -n \
       export QT_HOST_PATH=\"${QT_LINUX_PATH}\" -n \
       export QT_VERSION=\"${QT_VERSION}\" -n \
-      export PATH=${QT_WASM_PATH}/bin:${PATH} -n
+      export PATH=${QT_WASM_PATH}/bin:${PATH} -n \
       " >>/home/user/.bashrc \
 &&  chown user:user /home/user/.bashrc \
 &&  df -h
