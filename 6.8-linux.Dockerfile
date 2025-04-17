@@ -58,7 +58,7 @@ RUN --mount=type=cache,target=/qt/src,sharing=locked \
 &&  if ! [ -e "qt-everywhere-src-${QT_VERSION}.tar.xz" ] ; then \
         curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz ; \
     else \
-        echo "use cache" ; \
+        echo "use cache for qt-everywhere-src-${QT_VERSION}.tar.xz" ; \
     fi ; \
     ls -lah
 
@@ -66,8 +66,13 @@ WORKDIR /cmake/src
 RUN --mount=type=cache,target=/cmake/src,sharing=locked \
     set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
-&&  curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh \
-&&  chmod +x install-cmake.sh
+&&  if ! [ -e "install-cmake.sh" ] ; then \
+        curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh ; \
+    else \
+        echo "use cache for install-cmake.sh" ; \
+    fi ; \
+    chmod +x install-cmake.sh \
+&&  ls -lah
 
 WORKDIR /cmake/src
 RUN --mount=type=cache,target=/cmake/src,ro \

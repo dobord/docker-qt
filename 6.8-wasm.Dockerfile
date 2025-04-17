@@ -85,8 +85,13 @@ WORKDIR /cmake/src
 RUN --mount=type=cache,target=/cmake/src,sharing=locked \
     set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
-&&  curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh \
-&&  chmod +x install-cmake.sh
+&&  if ! [ -e "install-cmake.sh" ] ; then \
+        curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh ; \
+    else \
+        echo "use cache for install-cmake.sh" ; \
+    fi ; \
+    chmod +x install-cmake.sh \
+&&  ls -lah
 
 WORKDIR /cmake/src
 RUN --mount=type=cache,target=/cmake/src,ro \
