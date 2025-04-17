@@ -162,9 +162,9 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  locale-gen en_US.UTF-8 && dpkg-reconfigure locales \
 &&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user \
 &&  echo -e "-nexport PATH=${QT_LINUX_PATH}/bin:${PATH} -n \
-      QT_LINUX_PATH=\"${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64\" -n \
-      QT_HOST_PATH=\"${QT_LINUX_PATH}\" -n \
-      QT_VERSION=\"${QT_VERSION}\" -n \
+      export QT_LINUX_PATH=\"${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64\" -n \
+      export QT_HOST_PATH=\"${QT_LINUX_PATH}\" -n \
+      export QT_VERSION=\"${QT_VERSION}\" -n \
       " >>/home/user/.bashrc \
 &&  chown user:user /home/user/.bashrc
 
