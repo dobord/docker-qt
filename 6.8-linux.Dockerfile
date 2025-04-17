@@ -50,8 +50,18 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  apt update \
 &&  apt full-upgrade -y \
 &&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils locales \
+&&  locale \
+&&  locale -a \
+&&  localectl \
 &&  locale-gen en_US.UTF-8 \
-&&  dpkg-reconfigure locales
+&&  localectl set-locale LANG=en_US.UTF-8 \
+&&  locale \
+&&  locale -a \
+&&  localectl \
+&&  dpkg-reconfigure locales \
+&&  locale \
+&&  locale -a \
+&&  localectl
 
 WORKDIR /qt/src
 RUN --mount=type=cache,target=/qt/src,sharing=locked \
