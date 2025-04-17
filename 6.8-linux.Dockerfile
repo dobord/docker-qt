@@ -52,16 +52,16 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils locales \
 &&  locale \
 &&  locale -a \
-&&  localectl \
+&&  localectl || true \
 &&  locale-gen en_US.UTF-8 \
 &&  localectl set-locale LANG=en_US.UTF-8 \
 &&  locale \
 &&  locale -a \
-&&  localectl \
+&&  localectl || true \
 &&  dpkg-reconfigure locales \
 &&  locale \
 &&  locale -a \
-&&  localectl
+&&  localectl || true
 
 WORKDIR /qt/src
 RUN --mount=type=cache,target=/qt/src,sharing=locked \
