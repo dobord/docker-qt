@@ -61,26 +61,41 @@ ARG QT_WASM_CMAKE_TARGETS=" \
 "
 
 WORKDIR /root
-
 RUN --mount=type=cache,target=/root/.cache,sharing=locked \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  apt update \
 &&  apt full-upgrade -y \
-&&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils ; \
-    if ! [ -e "/root/.cache/qt-everywhere-src-${QT_VERSION}.tar.xz" ] ; then \
-        cd /root/.cache \
-&&      curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz ; \
-    else \
-        echo "use download-cache" ; \
-    fi ; \
-    cd /root \
-&&  ls -lah /root/.cache \
-&&  df -h \
+&&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils
+
+WORKDIR /qt/src
+RUN --mount=type=cache,target=/qt/src,sharing=locked \
+    set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
+&&  curl --http1.1 --location -O https://download.qt.io/archive/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz \
+&&  ls -lah
+
+WORKDIR /cmake/src
+RUN --mount=type=cache,target=/cmake/src,sharing=locked \
+    set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
 &&  curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh \
-&&  chmod +x install-cmake.sh \
-&&  ./install-cmake.sh --skip-license --prefix=/usr/local \
-&&  rm -fv install-cmake.sh \
+&&  chmod +x install-cmake.sh
+
+WORKDIR /cmake/src
+RUN --mount=type=cache,target=/cmake/src,ro \
+    set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
+&&  ./install-cmake.sh --skip-license --prefix=/usr/local
+
+WORKDIR /root
+RUN --mount=type=cache,target=/root/.cache,sharing=locked \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
 &&  add-apt-repository ppa:ubuntu-toolchain-r/test \
 &&  apt autoremove -y --purge software-properties-common \
 &&  apt install -y --no-install-recommends \
@@ -166,9 +181,20 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     ninja-build \
     pkg-config \
     unixodbc-dev \
-    zlib1g-dev \
-&&  df -h \
-&&  tar -xJf "/root/.cache/qt-everywhere-src-${QT_VERSION}.tar.xz" \
+    zlib1g-dev 
+
+WORKDIR /root
+RUN --mount=type=cache,target=/qt/src,ro \
+    set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
+&&  tar -xJf "/qt/src/qt-everywhere-src-${QT_VERSION}.tar.xz"
+
+WORKDIR /root
+RUN --mount=type=cache,target=/root/.cache,sharing=locked \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
 &&  cd qt-everywhere-src-* \
 &&  ./configure -prefix "${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" ${QT_LINUX_CONFIGURE_OPTIONS} ${QT_LINUX_CONFIGURE_EXTRA_OPTIONS} \
 &&  cmake --build . --parallel \
@@ -197,11 +223,21 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  ./emsdk install ${EMSDK_VERSION} \
 &&  ./emsdk activate ${EMSDK_VERSION} \
 &&  echo "emsdk installed on $(pwd)" \
-&&  cd /root \
+&&  df -h
+
+WORKDIR /root
+RUN --mount=type=cache,target=/qt/src,ro \
+    set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
+&&  tar -xJf "/qt/src/qt-everywhere-src-${QT_VERSION}.tar.xz"
+
+WORKDIR /root
+RUN --mount=type=cache,target=/root/.cache,sharing=locked \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    set -xe \
 &&  df -h \
-&&  tar -xJf "/root/.cache/qt-everywhere-src-${QT_VERSION}.tar.xz" \
-&&  df -h \
-&&  cd qt-everywhere-src-* \
+&&  export DEBIAN_FRONTEND=noninteractive \
 &&  ( bash -c "set -xe ; chmod +x /emsdk/emsdk_env.sh ; source /emsdk/emsdk_env.sh ; \
         em++ --version ; \
         ./configure -prefix ${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread -qt-host-path ${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64 \
@@ -218,7 +254,6 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  curl -Lo linuxdeployqt.AppImage "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" \
 &&  chmod a+x linuxdeployqt.AppImage \
 &&  mv -v linuxdeployqt.AppImage /usr/local/bin/linuxdeployqt \
-&&  apt-get -qq clean \
 &&  locale-gen en_US.UTF-8 && dpkg-reconfigure locales \
 &&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user \
 &&  echo -e "-n /emsdk/emsdk_env.sh \

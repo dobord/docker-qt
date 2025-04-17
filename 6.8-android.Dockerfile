@@ -27,8 +27,9 @@ ENV ANDROID_NDK_HOME=${ANDROID_NDK_ROOT} \
 COPY ./aqt.cfg /etc/aqt/
 
 WORKDIR /root
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/root/.cache,sharing=locked \
+RUN --mount=type=cache,target=/root/.cache,sharing=locked \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  BUILD_PACKAGES="python3-pip" \
@@ -50,11 +51,28 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         software-properties-common \
         sudo \
         unzip \
-        xz-utils \
+        xz-utils
+
+WORKDIR /cmake/src
+RUN --mount=type=cache,target=/cmake/src,sharing=locked \
+    set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
 &&  curl -Lo install-cmake.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh \
-&&  chmod +x install-cmake.sh \
-&&  ./install-cmake.sh --skip-license --prefix=/usr/local \
-&&  rm -fv install-cmake.sh \
+&&  chmod +x install-cmake.sh
+
+WORKDIR /cmake/src
+RUN --mount=type=cache,target=/cmake/src,ro \
+    set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
+&&  ./install-cmake.sh --skip-license --prefix=/usr/local
+
+WORKDIR /root
+RUN --mount=type=cache,target=/root/.cache,sharing=locked \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    set -xe \
+&&  export DEBIAN_FRONTEND=noninteractive \
+&&  BUILD_PACKAGES="python3-pip" \
 &&  curl -Lo tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip \
 &&  unzip tools.zip && rm tools.zip \
 &&  mkdir -p /opt/android-sdk/cmdline-tools/ \
@@ -64,7 +82,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 &&  sdkmanager "platforms;android-${ANDROID_PLATFORM_VERSION}" "platform-tools" "build-tools;${BUILD_TOOLS_VERSION}" "ndk;${ANDROID_NDK_VERSION}" ${SDKMANAGER_EXTRA_ARGS} \
 &&  pip install --break-system-packages aqtinstall \
 &&  aqt -c /etc/aqt/aqt.cfg install-qt linux desktop ${QT_VERSION} linux_gcc_64 --outputdir "${QT_LINUX_INSTALL_BASE}" --module qtshadertools \
+&&  mkdir /root/.cache/openssl-src \
+&&  cd /root/.cache/openssl-src \
 &&  curl -Lo openssl.tar.gz https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz \
+&&  cd /root \
 &&  for QT_ARCH in ${QT_ARCHS} ; do \
         aqt -c /etc/aqt/aqt.cfg install-qt linux android ${QT_VERSION} android_${QT_ARCH} --outputdir "${QT_ANDRIOD_INSTALL_BASE}" ${AQT_EXTRA_ARGS} ; \
         case $QT_ARCH in \
@@ -73,7 +94,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
             "x86"       ) OPENSSL_ARCH=x86    ;; \
             "x86_64"    ) OPENSSL_ARCH=x86_64 ;; \
         esac ; \
-        tar xzf openssl.tar.gz ; \
+        tar xzf /root/.cache/openssl-src/openssl.tar.gz ; \
         cd openssl-${OPENSSL_VERSION}/ ; \
         sed -i 's/sub shlibvariant        { $target{shlib_variant} || "" }/sub shlibvariant        { "_3" }/g' ./Configurations/platform/Unix.pm ; \
         ./Configure android-${OPENSSL_ARCH} shared zlib-dynamic -no-engine no-tests --prefix="${QT_ANDRIOD_INSTALL_BASE}/${QT_VERSION}/android_${QT_ARCH}" -D__ANDROID_API__=28 ; \
@@ -82,10 +103,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         cd ../ ; \
         rm -rf openssl-${OPENSSL_VERSION} ; \
     done \
-&&  rm -fv openssl.tar.gz \
-&&  pip cache purge \
-&&  apt autoremove --purge -y ${BUILD_PACKAGES} \
-&&  rm -rf /var/lib/apt/lists/* \
 &&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user
 
 USER user
