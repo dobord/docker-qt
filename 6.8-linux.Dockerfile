@@ -54,6 +54,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  locale -a \
 &&  localectl || true \
 &&  locale-gen en_US.UTF-8 \
+&&  export LANG=en_US \
 &&  localectl set-locale LANG=en_US.UTF-8 \
 &&  locale \
 &&  locale -a \
