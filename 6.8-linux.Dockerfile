@@ -41,10 +41,6 @@ ARG QT_CONFIGURE_OPTIONS=" \
 "
 ARG QT_CONFIGURE_EXTRA_OPTIONS=""
 
-ENV QT_LINUX_PATH="${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64"
-ENV QT_HOST_PATH="${QT_LINUX_PATH}"
-ENV QT_VERSION="${QT_VERSION}"
-
 WORKDIR /root
 
 RUN --mount=type=cache,target=/root/.cache,sharing=locked \
@@ -165,7 +161,11 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  apt-get -qq clean \
 &&  locale-gen en_US.UTF-8 && dpkg-reconfigure locales \
 &&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user \
-&&  echo -e "export PATH=${QT_LINUX_PATH}/bin:${PATH}" >>/home/user/.bashrc \
+&&  echo -e "-nexport PATH=${QT_LINUX_PATH}/bin:${PATH} -n \
+      QT_LINUX_PATH=\"${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64\" -n \
+      QT_HOST_PATH=\"${QT_LINUX_PATH}\" -n \
+      QT_VERSION=\"${QT_VERSION}\" -n \
+      " >>/home/user/.bashrc \
 &&  chown user:user /home/user/.bashrc
 
 USER user
