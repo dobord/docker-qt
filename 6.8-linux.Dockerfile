@@ -41,9 +41,8 @@ ARG QT_CONFIGURE_OPTIONS=" \
 "
 ARG QT_CONFIGURE_EXTRA_OPTIONS=""
 
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US
-ENV LC_ALL=en_US.UTF-8
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
 WORKDIR /root
 RUN --mount=type=cache,target=/root/.cache,sharing=locked \
@@ -53,19 +52,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  apt update \
 &&  apt full-upgrade -y \
-&&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils locales \
-&&  locale \
-&&  locale -a \
-&&  localectl || true \
-&&  locale-gen en_US.UTF-8 \
-&&  localectl set-locale LANG=en_US.UTF-8 \
-&&  locale \
-&&  locale -a \
-&&  localectl || true \
-&&  dpkg-reconfigure locales \
-&&  locale \
-&&  locale -a \
-&&  localectl || true
+&&  apt install -y --no-install-recommends curl ca-certificates software-properties-common xz-utils
 
 WORKDIR /qt/src
 RUN --mount=type=cache,target=/qt/src,sharing=locked \
@@ -100,6 +87,7 @@ WORKDIR /root
 RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    --mount=type=cache,target=/qt/src,ro \
     set -xe \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  add-apt-repository ppa:ubuntu-toolchain-r/test \
@@ -187,20 +175,8 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     ninja-build \
     pkg-config \
     unixodbc-dev \
-    zlib1g-dev
-
-WORKDIR /root
-RUN --mount=type=cache,target=/qt/src,ro \
-    set -xe \
-&&  export DEBIAN_FRONTEND=noninteractive \
-&&  tar -xJf "/qt/src/qt-everywhere-src-${QT_VERSION}.tar.xz"
-
-WORKDIR /root
-RUN --mount=type=cache,target=/root/.cache,sharing=locked \
-    --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    set -xe \
-&&  export DEBIAN_FRONTEND=noninteractive \
+    zlib1g-dev \
+&&  tar -xJf "/qt/src/qt-everywhere-src-${QT_VERSION}.tar.xz" \
 &&  cd qt-everywhere-src-* \
 &&  ./configure -prefix "${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" ${QT_CONFIGURE_OPTIONS} ${QT_CONFIGURE_EXTRA_OPTIONS} \
 &&  cmake --build . --parallel \
@@ -347,6 +323,8 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  curl -Lo linuxdeployqt.AppImage "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" \
 &&  chmod a+x linuxdeployqt.AppImage \
 &&  mv -v linuxdeployqt.AppImage /usr/local/bin/linuxdeployqt \
+&&  apt-get -qq clean \
+&&  locale-gen en_US.UTF-8 && dpkg-reconfigure locales \
 &&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user \
 &&  echo -e "-nexport PATH=${QT_LINUX_PATH}/bin:${PATH} -n \
       export QT_LINUX_PATH=\"${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64\" -n \
