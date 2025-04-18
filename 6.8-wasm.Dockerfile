@@ -374,7 +374,6 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
         &&  cmake --build . --parallel ${QT_WASM_CMAKE_TARGETS} \
         &&  df -h \
         &&  cmake --install . \
-        &&  ldconfig -v \
     ") \
 &&  cd .. \
 &&  df -h \
