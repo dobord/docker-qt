@@ -368,6 +368,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  cd qt-everywhere-src-* \
 &&  ( bash -c "set -xe ; chmod +x /emsdk/emsdk_env.sh ; source /emsdk/emsdk_env.sh ; \
         em++ --version ; \
+        export LD_LIBRARY_PATH=${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64/lib:${LD_LIBRARY_PATH} ; \
         ./configure -prefix ${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread -qt-host-path ${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64 \
             -xplatform wasm-emscripten \
             -feature-thread -prefix $PWD/qtbase ${QT_WASM_CONFIGURE_OPTIONS} ${QT_WASM_CONFIGURE_EXTRA_OPTIONS} \
@@ -526,10 +527,13 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user \
 &&  echo -e "-n /emsdk/emsdk_env.sh \
       export QT_LINUX_PATH=\"${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64\" -n \
+      export QT_LINUX_LD_LIBRARY_PATH=\"${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64/lib\" -n \
       export QT_WASM_PATH=\"${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread\" -n \
+      export QT_WASM_LD_LIBRARY_PATH=\"${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread/lib\" -n \
       export QT_HOST_PATH=\"${QT_LINUX_PATH}\" -n \
       export QT_VERSION=\"${QT_VERSION}\" -n \
       export PATH=${QT_WASM_PATH}/bin:${PATH} -n \
+      export LD_LIBRARY_PATH=${QT_WASM_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH} -n \
       " >>/home/user/.bashrc \
 &&  chown user:user /home/user/.bashrc \
 &&  df -h
