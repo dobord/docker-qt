@@ -361,8 +361,8 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  ./emsdk install ${EMSDK_VERSION} \
 &&  ./emsdk activate ${EMSDK_VERSION} \
 &&  echo "emsdk installed on $(pwd)" \
-&&  df -h
-&&  tar -xJf "/qt/src/qt-everywhere-src-${QT_VERSION}.tar.xz"
+&&  df -h \
+&&  tar -xJf "/qt/src/qt-everywhere-src-${QT_VERSION}.tar.xz" \
 &&  df -h \
 &&  export DEBIAN_FRONTEND=noninteractive \
 &&  cd qt-everywhere-src-* \
