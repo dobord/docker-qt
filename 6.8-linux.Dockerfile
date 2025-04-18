@@ -41,6 +41,10 @@ ARG QT_CONFIGURE_OPTIONS=" \
 "
 ARG QT_CONFIGURE_EXTRA_OPTIONS=""
 
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US
+ENV LC_ALL=en_US.UTF-8
+
 WORKDIR /root
 RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -54,8 +58,6 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  locale -a \
 &&  localectl || true \
 &&  locale-gen en_US.UTF-8 \
-&&  export LANG=en_US.UTF8 \
-&&  export LC_ALL=en_US.UTF8 \
 &&  localectl set-locale LANG=en_US.UTF-8 \
 &&  locale \
 &&  locale -a \
