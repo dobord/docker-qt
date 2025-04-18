@@ -328,8 +328,10 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  groupadd -r user && useradd --create-home --gid user user && echo 'user ALL=NOPASSWD: ALL' > /etc/sudoers.d/user \
 &&  echo -e "-nexport PATH=${QT_LINUX_PATH}/bin:${PATH} -n \
       export QT_LINUX_PATH=\"${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64\" -n \
+      export QT_LINUX_LD_LIBRARY_PATH=\"${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64/lib\" -n \
       export QT_HOST_PATH=\"${QT_LINUX_PATH}\" -n \
       export QT_VERSION=\"${QT_VERSION}\" -n \
+      export LD_LIBRARY_PATH=${QT_LINUX_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH} -n \
       " >>/home/user/.bashrc \
 &&  chown user:user /home/user/.bashrc
 
