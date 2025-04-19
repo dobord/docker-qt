@@ -367,6 +367,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  cd qt-everywhere-src-* \
 &&  ( bash -c "set -xe ; chmod +x /emsdk/emsdk_env.sh ; source /emsdk/emsdk_env.sh ; \
         em++ --version ; \
+        export PATH=${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64/bin:${PATH} ; \
         export LD_LIBRARY_PATH=${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64/lib:${LD_LIBRARY_PATH} ; \
         ./configure -prefix ${QT_WASM_INSTALL_BASE}/${QT_VERSION}/wasm_multithread -qt-host-path ${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64 \
             -xplatform wasm-emscripten \
@@ -374,6 +375,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
         &&  cmake --build . --parallel ${QT_WASM_CMAKE_TARGETS} \
         &&  df -h \
         &&  cmake --install . \
+        &&  echo "Qt-${QT_VERSION}-wasm installed" \
     ") \
 &&  cd .. \
 &&  df -h \
