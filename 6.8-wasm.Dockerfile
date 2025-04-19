@@ -345,6 +345,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     libzstd-dev \
     bash \
     clang \
+    libclang-dev \
     openjdk-11-jdk \
     python3 \
 &&  update-alternatives \
@@ -361,6 +362,7 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
 &&  ./emsdk install ${EMSDK_VERSION} \
 &&  ./emsdk activate ${EMSDK_VERSION} \
 &&  echo "emsdk installed on $(pwd)" \
+&&  cd .. \
 &&  df -h \
 &&  tar -xJf "/qt/src/qt-everywhere-src-${QT_VERSION}.tar.xz" \
 &&  df -h \
