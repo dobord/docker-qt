@@ -1,7 +1,8 @@
 # Docker container to build Qt 6.8 for WebAssembly with latest cmake and linuxdeployqt
 # Image: dobord/docker-qt:6.8-wasm
 
-FROM ubuntu:20.04
+#FROM ubuntu:20.04
+FROM dobord/docker-qt:test.6.8-linux
 
 # Set version according to https://doc.qt.io/qt-6.8/wasm.html
 ARG EMSDK_VERSION=3.1.56
@@ -63,6 +64,7 @@ ARG QT_WASM_CMAKE_TARGETS=" \
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 
+USER root
 WORKDIR /root
 RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -123,157 +125,6 @@ RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-13 \
     --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-13 \
     --slave /usr/bin/cpp cpp /usr/bin/cpp-13 \
-&&  apt install -y --no-install-recommends \
-    libasound2-dev \
-    libatspi2.0-dev \
-    libb2-dev \
-    libcups2-dev \
-    libdbus-1-dev \
-    libdouble-conversion-dev \
-    libdrm-dev \
-    libfontconfig-dev \
-    libfreetype6-dev \
-    libgbm-dev \
-    libgl-dev \
-    libgl1-mesa-dev \
-    libgles2-mesa-dev \
-    libglib2.0-dev \
-    libglu1-mesa-dev \
-    libgstreamer-plugins-base1.0-dev \
-    libgstreamer1.0-dev \
-    libgtk-3-dev \
-    libharfbuzz-dev \
-    libicu-dev \
-    libinput-dev \
-    libjpeg-dev \
-    libkrb5-dev \
-    liblttng-ust-dev \
-    libmtdev-dev \
-    libmysqlclient-dev \
-    libpcre2-dev \
-    libpng-dev \
-    libpq-dev \
-    libproxy-dev \
-    libpulse-dev \
-    libsctp-dev \
-    libsdl2-dev \
-    libsqlite3-dev \
-    libssl-dev \
-    libsystemd-dev \
-    libts-dev \
-    libudev-dev \
-    libvulkan-dev \
-    libwayland-dev \
-    libwebp-dev \
-    libx11-dev \
-    libx11-xcb-dev \
-    libxcb-cursor-dev \
-    libxcb-glx0-dev \
-    libxcb-icccm4-dev \
-    libxcb-image0-dev \
-    libxcb-keysyms1-dev \
-    libxcb-randr0-dev \
-    libxcb-render-util0-dev \
-    libxcb-render0-dev \
-    libxcb-shape0-dev \
-    libxcb-shm0-dev \
-    libxcb-sync-dev \
-    libxcb-util-dev \
-    libxcb-xfixes0-dev \
-    libxcb-xinerama0-dev \
-    libxcb-xinput-dev \
-    libxcb-xkb-dev \
-    libxcb1-dev \
-    libxext-dev \
-    libxfixes-dev \
-    libxi-dev \
-    libxkbcommon-dev \
-    libxkbcommon-x11-dev \
-    libxrender-dev \
-    libzstd-dev \
-    ninja-build \
-    pkg-config \
-    unixodbc-dev \
-    zlib1g-dev \
-&&  tar -xJf "/qt/src/qt-everywhere-src-${QT_VERSION}.tar.xz" \
-&&  cd qt-everywhere-src-* \
-&&  ./configure -prefix "${QT_LINUX_INSTALL_BASE}/${QT_VERSION}/gcc_64" ${QT_LINUX_CONFIGURE_OPTIONS} ${QT_LINUX_CONFIGURE_EXTRA_OPTIONS} \
-&&  cmake --build . --parallel \
-&&  df -h \
-&&  apt autoremove -y --purge \
-    libasound2-dev \
-    libatspi2.0-dev \
-    libb2-dev \
-    libcups2-dev \
-    libdbus-1-dev \
-    libdouble-conversion-dev \
-    libdrm-dev \
-    libfontconfig-dev \
-    libfreetype6-dev \
-    libgbm-dev \
-    libgl-dev \
-    libgl1-mesa-dev \
-    libgles2-mesa-dev \
-    libglib2.0-dev \
-    libglu1-mesa-dev \
-    libgstreamer-plugins-base1.0-dev \
-    libgstreamer1.0-dev \
-    libgtk-3-dev \
-    libharfbuzz-dev \
-    libicu-dev \
-    libinput-dev \
-    libjpeg-dev \
-    libkrb5-dev \
-    liblttng-ust-dev \
-    libmtdev-dev \
-    libmysqlclient-dev \
-    libpcre2-dev \
-    libpng-dev \
-    libpq-dev \
-    libproxy-dev \
-    libpulse-dev \
-    libsctp-dev \
-    libsdl2-dev \
-    libsqlite3-dev \
-    libssl-dev \
-    libsystemd-dev \
-    libts-dev \
-    libudev-dev \
-    libvulkan-dev \
-    libwayland-dev \
-    libwebp-dev \
-    libx11-dev \
-    libx11-xcb-dev \
-    libxcb-cursor-dev \
-    libxcb-glx0-dev \
-    libxcb-icccm4-dev \
-    libxcb-image0-dev \
-    libxcb-keysyms1-dev \
-    libxcb-randr0-dev \
-    libxcb-render-util0-dev \
-    libxcb-render0-dev \
-    libxcb-shape0-dev \
-    libxcb-shm0-dev \
-    libxcb-sync-dev \
-    libxcb-util-dev \
-    libxcb-xfixes0-dev \
-    libxcb-xinerama0-dev \
-    libxcb-xinput-dev \
-    libxcb-xkb-dev \
-    libxcb1-dev \
-    libxext-dev \
-    libxfixes-dev \
-    libxi-dev \
-    libxkbcommon-dev \
-    libxkbcommon-x11-dev \
-    libxrender-dev \
-    libzstd-dev \
-&&  df -h \
-&&  cmake --install . \
-&&  ldconfig -v \
-&&  cd .. \
-&&  df -h \
-&&  rm -rf qt-everywhere-src-* \
 &&  df -h \
 &&  apt install -y --no-install-recommends \
     libasound2-dev \
